@@ -1,3 +1,29 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Menu from './pages/Menu';
+import LevelSelect from './pages/LevelSelect';
+import Game from './pages/Game';
+import Settings from './pages/Settings';
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* Ruta principal (Home) */}
+        <Route path="/" element={<Menu />} />
+        
+        {/* Resto de pantallas */}
+        <Route path="/levels" element={<LevelSelect />} />
+        <Route path="/game" element={<Game />} />
+        <Route path="/settings" element={<Settings />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+
+
+
+/*Lo que había antes
 import { useState } from 'react'
 import heroImg from './assets/hero.png'
 import reactLogo from './assets/react.svg'
@@ -120,3 +146,4 @@ function App() {
 }
 
 export default App
+*/
