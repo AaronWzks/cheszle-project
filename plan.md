@@ -458,22 +458,6 @@ En el Entregable 3 definimos una estructura JSON para los niveles. La reutilizam
 - [ ] levels.json tiene 1 nivel válido y se puede importar en JS.
 - [ ] La estructura está documentada.
 
-### Tarea 0.B5 · Documentación: diagrama de componentes
-
-**¿Para qué sirve?**
-El diagrama de componentes del Entregable 3 era de Unity. Hay que rehacerlo para la versión web.
-
-**Pasos**
-
-1. En draw.io, dibuja 3 bloques grandes: **Vista** (pages + components), **Controlador** (GameContext + reducer) y **Modelo** (engine).
-2. Dentro de cada bloque, pon los archivos principales.
-3. Dibuja flechas: Vista → dispatch → Controlador → llama a → Modelo. Y un bloque aparte para el Web Worker de la IA y otro para storage.
-4. Guárdalo en `docs/img/componentes.png` y explícalo en `docs/arquitectura.md`.
-
-**Está terminada cuando…**
-
-- [ ] El diagrama refleja la estructura de carpetas real.
-
 ## MªJosé — Diseño y navegación
 
 ### Tarea 0.C1 · Adaptar los mockups a web
@@ -570,22 +554,6 @@ export default function App() {
 
 - [ ] Se puede navegar entre todas las pantallas sin que la página se recargue.
 - [ ] Una URL desconocida redirige al menú.
-
-### Tarea 0.C4 · Documentación: diagrama de navegación
-
-**¿Para qué sirve?**
-Muestra cómo se pasa de una pantalla a otra. Lo pide la asignatura y ayuda a no olvidar ningún botón de «volver».
-
-**Pasos**
-
-1. En draw.io, dibuja un cuadro por pantalla y una flecha por cada botón que lleva a otra pantalla, con el texto del botón en la flecha.
-2. Incluye los modales (victoria/derrota) y a dónde llevan sus botones.
-3. Guárdalo en `docs/img/navegacion.png`.
-
-**Está terminada cuando…**
-
-- [ ] Todas las pantallas y botones aparecen en el diagrama.
-- [ ] Coincide con las rutas de App.jsx.
 
 > **Hito de la Fase 0:** el proyecto arranca, la CI funciona, existe el contrato del motor, el estado global y la navegación entre pantallas vacías.
 
