@@ -268,23 +268,6 @@ jobs:
 - [ ] Al abrir una PR aparece el check de la CI.
 - [ ] Si un test falla a propósito, la PR queda en rojo y no deja fusionar.
 
-### Tarea 0.A5 · Documentación: despliegue y cambio a web
-
-**¿Para qué sirve?**
-El tutor necesita saber por qué cambiamos de Unity a web y cómo se despliega ahora la aplicación.
-
-**Pasos**
-
-1. Crea `docs/despliegue.md`.
-2. Haz un diagrama de despliegue en draw.io (app.diagrams.net) con: navegador del usuario → Vercel (hosting) ← GitHub (código) y el localStorage dentro del navegador. Expórtalo a PNG y guárdalo en `docs/img/`.
-3. Escribe la justificación del cambio (media página): accesible desde cualquier dispositivo sin instalar nada, el equipo domina más React/JS, despliegue gratis y automático, más fácil de probar.
-4. Actualiza la tabla de herramientas del Entregable 3 (Unity → Vite/React, C# → JavaScript, PlayerPrefs → localStorage).
-
-**Está terminada cuando…**
-
-- [ ] El diagrama está en el repo y se entiende sin explicaciones.
-- [ ] La justificación está escrita y revisada por otro miembro.
-
 ## Adri — Contrato y estado
 
 ### Tarea 0.B1 · Escribir el contrato del motor (engine/index.js)
