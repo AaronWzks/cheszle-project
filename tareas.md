@@ -19,7 +19,7 @@
 
 - [x] 0.C1 · Adaptar los mockups a web
 - [x] 0.C2 · Crear el sistema de diseño
-- [ ] 0.C3 · Configurar la navegación (React Router)
+- [x] 0.C3 · Configurar la navegación (React Router)
 
 ## Fase 1 — Núcleo jugable
 
