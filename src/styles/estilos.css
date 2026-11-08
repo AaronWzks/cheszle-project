@@ -69,7 +69,7 @@
   --e1: 8px;  --e2: 16px;  --e3: 24px;  --e4: 32px;  --e5: 48px;
 
   /* Tablero: tamaño de casilla (70px en escritorio, se reduce en móvil) */
-  --casilla: 70px;
+  --casilla: 60px;
 }
 
 /* --------------------------------------------------------------------------
@@ -257,10 +257,10 @@ h1, h2, h3, p { margin: 0; }
 }
 .turno--ia { background: var(--naranja); }
 
-/* Tablero 6x6 con CSS Grid */
+/* Tablero 8x8 con CSS Grid */
 .tablero {
   display: grid;
-  grid-template-columns: repeat(6, var(--casilla));
+  grid-template-columns: repeat(8, var(--casilla));
   grid-auto-rows: var(--casilla);
   border: 4px solid var(--borde-tablero);
   border-radius: 6px;
@@ -376,7 +376,7 @@ input[type="range"] { width: 100%; accent-color: var(--verde); }
    12. RESPONSIVE (móvil): se aplica cuando la pantalla mide 700px o menos
    -------------------------------------------------------------------------- */
 @media (max-width: 700px) {
-  :root { --casilla: calc((100vw - 56px) / 6); }   /* el tablero ocupa todo el ancho */
+  :root { --casilla: calc((100vw - 56px) / 8); }   /* el tablero ocupa todo el ancho */
   .pantalla { padding: var(--e2) 12px; }
   .partida { grid-template-columns: 1fr; gap: var(--e2); }
   .partida__der { order: 2; }
