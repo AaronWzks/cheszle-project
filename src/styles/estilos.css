@@ -23,11 +23,11 @@
   --verde:            #2FA89A; /* nivel superado, "Tu turno", barras */
   --verde-oscuro:     #1E7F5C; /* iconos de la casilla objetivo */
   --verde-suave:      #8FD9B6; /* casilla objetivo del tablero */
-  --rojo:             #D9534F; /* salir / peligro */
+  --rojo:             #B8342F; /* salir / peligro (oscurecido: contraste 5,88:1 con texto blanco) */
   --rojo-oscuro:      #B3261E; /* texto de error */
   --rojo-suave:       #FBE3E1; /* fondo del mensaje de error */
   --naranja:          #E8833A; /* "Turno de la IA" */
-  --azul-mov:         #2F7FE0; /* puntos de movimientos válidos */
+  --azul-mov:         #1559B3; /* puntos de movimientos válidos (oscurecido) */
 
   /* Tablero */
   --casilla-clara:    #F0D9B5;
@@ -112,12 +112,12 @@ h1, h2, h3, p { margin: 0; }
 .cabecera__titulo { text-align: center; font-size: var(--t-h2); }
 
 .btn-cuadro {                                  /* botón ‹ y botón pausa */
-  width: 40px; height: 40px;
+  width: 48px; height: 48px;   /* 48px: tamaño táctil mínimo recomendado */
   background: var(--panel);
   color: var(--texto-claro);
   border: 0;
   border-radius: var(--radio-cuadro);
-  font-size: 30px; line-height: 1;
+  font-size: 24px; line-height: 1; padding: 0;   /* 24px: que ❚❚ quepa dentro del cuadro */
 }
 
 .pantalla {                                    /* contenido centrado */
@@ -172,7 +172,7 @@ h1, h2, h3, p { margin: 0; }
 /* Peligro */
 .btn--peligro {
   background: var(--rojo); color: var(--texto-claro); border: 0;
-  box-shadow: 0 4px 0 #A93F3B;
+  box-shadow: 0 4px 0 #8A2723;
 }
 .btn--peligro-borde { background: transparent; color: var(--rojo-oscuro); border: 2px solid var(--rojo); }
 
@@ -276,10 +276,10 @@ h1, h2, h3, p { margin: 0; }
 .casilla--muro       { background: var(--muro) !important; }
 .casilla--prohibida  { background: var(--prohibida) !important; color: var(--rojo-oscuro); }
 .casilla--objetivo   { background: var(--verde-suave) !important; color: var(--verde-oscuro); }
-.casilla--seleccionada { outline: 4px solid var(--azul-mov); outline-offset: -4px; }
+.casilla--seleccionada { outline: 4px solid var(--texto-oscuro); outline-offset: -4px; }   /* oscuro: se ve en casilla clara y oscura */
 .casilla--ia-ultima  { box-shadow: inset 0 0 0 100px rgba(242, 215, 74, .75); }
 .casilla--valida::after {                        /* punto azul de movimiento válido */
-  content: ""; width: 13px; height: 13px; border-radius: 50%; background: var(--azul-mov);
+  content: ""; width: 13px; height: 13px; border-radius: 50%; background: var(--azul-mov); border: 2px solid #fff;   /* borde blanco: se ve también sobre casilla oscura */
   position: absolute;
 }
 .pieza--negra  { color: #141414; }
@@ -296,7 +296,7 @@ h1, h2, h3, p { margin: 0; }
 .partida__der { display: flex; flex-direction: column; gap: var(--e2); width: min(500px, 100%); }
 .regla { display: flex; align-items: center; gap: var(--e2); margin-bottom: var(--e2); }
 .regla__icono {
-  width: 40px; height: 40px; border-radius: 6px; flex: none;
+  width: 48px; height: 48px;   /* 48px: tamaño táctil mínimo recomendado */ border-radius: 6px; flex: none;
   display: grid; place-items: center; font-size: 26px;
 }
 .regla__nombre { font-size: var(--t-texto); }
