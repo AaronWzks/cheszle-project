@@ -12,8 +12,8 @@
 
 - [x] 0.B1 · Escribir el contrato del motor (engine/index.js)
 - [x] 0.B2 · Definir la forma del estado de la partida
-- [ ] 0.B3 · Crear GameContext y el reducer
-- [ ] 0.B4 · Adaptar el JSON de niveles
+- [x] 0.B3 · Crear GameContext y el reducer
+- [x] 0.B4 · Adaptar el JSON de niveles
 
 ### MªJosé
 
@@ -38,10 +38,8 @@
 
 ### MªJosé
 
-- [ ] 1.C1 · Lógica de las piezas con mecánicas nuevas
 - [ ] 1.C2 · Diseño visual de las piezas
 - [ ] 1.C3 · Animación del movimiento
-- [ ] 1.C4 · Tests de las piezas nuevas
 
 ## Fase 2 — IA y objetivos
 
