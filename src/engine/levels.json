@@ -1,0 +1,15 @@
+[
+  {
+    "id": "easy-1",
+    "name": "Primer paso",
+    "difficulty": "easy",
+    "size": { "width": 8, "height": 8 },
+    "objective": { "type": "reachSquare", "target": { "x": 4, "y": 7 } },
+    "pieces": [
+      { "id": "w-king", "type": "king", "color": "white", "x": 4, "y": 0 },
+      { "id": "b-rook-1", "type": "rook", "color": "black", "x": 0, "y": 5 }
+    ],
+    "obstacles": { "count": 3 },
+    "maxMoves": 20
+  }
+]
