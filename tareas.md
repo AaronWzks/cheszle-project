@@ -7,7 +7,6 @@
 - [x] 0.A1 · Crear el repositorio y las ramas
 - [x] 0.A2 · Crear el proyecto con Vite y las herramientas
 - [x] 0.A3 · Configurar la integración continua (CI)
-- [ ] 0.A4 · Montar el tablero Scrum
 - [ ] 0.A5 · Documentación: despliegue y cambio a web
 
 ### Adri

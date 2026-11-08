@@ -16,7 +16,7 @@ Cada tarea está explicada con el mismo formato:
 
 ### Normas del equipo
 
-- **Scrum Master rotatorio:** cada sprint lo lleva una persona distinta. Organiza la planning (lunes), el daily (15 min diarios), la review y la retro (viernes), y mantiene el tablero al día.
+- **Scrum Master rotatorio:** cada sprint lo lleva una persona distinta. Organiza la planning (lunes), el daily (15 min diarios), la review y la retro (viernes).
 - **Code review cruzada:** ninguna Pull Request se fusiona sin la aprobación de otra persona. Aarón revisa a Adri, Adri revisa a MªJosé y MªJosé revisa a Aarón.
 - **Cada uno prueba lo suyo:** todo código nuevo lleva sus tests.
 - **Cada uno documenta lo suyo:** cada funcionalidad se explica en la carpeta `docs/`.
@@ -30,7 +30,6 @@ Además de su lista propia, toda tarea debe cumplir esto antes de darse por term
 - [ ] `npm run lint` no da errores y `npm test` pasa en verde.
 - [ ] Hay tests para la lógica nueva.
 - [ ] Otra persona ha revisado y aprobado la PR.
-- [ ] La issue del tablero está en la columna *Done*.
 - [ ] Si cambia algo del diseño o la arquitectura, la documentación está actualizada.
 
 ## Stack y arquitectura
@@ -268,26 +267,6 @@ jobs:
 
 - [ ] Al abrir una PR aparece el check de la CI.
 - [ ] Si un test falla a propósito, la PR queda en rojo y no deja fusionar.
-
-### Tarea 0.A4 · Montar el tablero Scrum
-
-**¿Para qué sirve?**
-El tablero es donde se ve qué está haciendo cada uno y qué falta. Cada tarea de este documento será una *issue* (tarjeta).
-
-**Pasos**
-
-1. En el repo: pestaña *Projects → New project → Board*.
-2. Crea las columnas: **Backlog**, **To do** (sprint actual), **In progress**, **In review**, **Done**.
-3. Crea las etiquetas: `motor`, `ui`, `ia`, `test`, `docs`, `bug`.
-4. Crea una issue por cada tarea de este documento (por ejemplo «0.A4 Montar el tablero Scrum»), con su etiqueta, su responsable y la lista «Está terminada cuando…» copiada en la descripción.
-5. Mueve las tareas de la Fase 0 a **To do** y el resto a **Backlog**.
-
-> **Consejo:** Escribe en la PR `Closes #12` (el número de la issue) y GitHub cerrará la issue automáticamente al fusionar.
-
-**Está terminada cuando…**
-
-- [ ] Todas las tareas del plan existen como issues con responsable.
-- [ ] Los tres miembros pueden ver y mover tarjetas.
 
 ### Tarea 0.A5 · Documentación: despliegue y cambio a web
 
