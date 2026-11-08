@@ -38,7 +38,7 @@ Los niveles del juego se definen como datos en [`src/engine/levels.json`](../src
 | Campo | Qué es |
 |---|---|
 | `id` | Identificador único de la pieza dentro del nivel, por ejemplo `w-king` o `b-rook-1`. |
-| `type` | Tipo de pieza: `king`, `queen`, `rook`, `bishop`, `knight`, `pawn` (y las piezas nuevas). |
+| `type` | Tipo de pieza: `king`, `queen`, `rook`, `bishop`, `knight`, `pawn`. |
 | `color` | `white` (jugador) o `black` (IA). |
 | `x`, `y` | Casilla inicial. `y = 0` es la primera fila del tablero. |
 

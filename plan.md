@@ -154,7 +154,7 @@ La estructura siempre es la misma: **preparar** los datos, **ejecutar** la funci
 | Fase | Scrum Master | Aarón | Adri | MªJosé |
 |---|---|---|---|---|
 | 0 · Setup (sem. 1) | Aarón | Infraestructura | Contrato y estado | Diseño y navegación |
-| 1 · Núcleo (sem. 2–3) | Adri | Tablero | Reglas clásicas | Piezas nuevas |
+| 1 · Núcleo (sem. 2–3) | Adri | Tablero | Reglas clásicas | Diseño de piezas |
 | 2 · IA (sem. 4–5) | MªJosé | Objetivos y fin de partida | Algoritmo de IA | Integración de la IA |
 | 3 · Niveles (sem. 6–7) | Aarón | Persistencia y ajustes | Obstáculos | Niveles y menú |
 | 4 · Entrega (sem. 8) | Adri | Rendimiento y bugs | UX y accesibilidad | QA y despliegue |
@@ -643,7 +643,7 @@ it('pinta 64 casillas', () => {
 ### Tarea 1.B1 · Movimientos de las piezas clásicas
 
 **¿Para qué sirve?**
-Cada pieza sabe a qué casillas puede moverse. Lo separamos en un archivo por pieza para que sea fácil de leer, probar y añadir piezas nuevas.
+Cada pieza sabe a qué casillas puede moverse. Lo separamos en un archivo por pieza para que sea fácil de leer y probar.
 
 **Pasos**
 
@@ -760,28 +760,7 @@ Cualquiera del equipo (y el tutor) debe poder entender cómo funciona el motor s
 
 - [ ] El documento está revisado por Aarón.
 
-## MªJosé — Piezas nuevas
-
-### Tarea 1.C1 · Lógica de las piezas con mecánicas nuevas
-
-**¿Para qué sirve?**
-Las piezas nuevas son lo que hace especial a nuestro juego. Se programan igual que las clásicas, así el resto del motor (reglas, IA) las entiende sin cambios.
-
-**Pasos**
-
-1. Revisa en el Entregable 1 cómo se mueve cada pieza nueva. Dibuja sus movimientos en una cuadrícula de papel.
-2. Crea un archivo por pieza en `src/engine/pieces/` con la misma función `getMoves(board, from, piece)`.
-3. Reutiliza las funciones auxiliares de Adri (`slide`, saltos) siempre que puedas.
-4. Regístralas en `pieces/index.js`.
-5. Añade una pieza nueva al nivel de ejemplo y pruébala en el navegador.
-6. Explica cada pieza en `docs/piezas.md` con un dibujo de sus movimientos.
-
-> **Consejo:** Si una pieza nueva tiene una mecánica muy distinta (por ejemplo, empujar otras piezas), habla antes con Adri: puede que applyMove necesite un caso especial.
-
-**Está terminada cuando…**
-
-- [ ] Cada pieza nueva tiene getMoves, test y documentación.
-- [ ] Funcionan con getLegalMoves sin cambiar rules.js.
+## MªJosé — Diseño de piezas y animación
 
 ### Tarea 1.C2 · Diseño visual de las piezas
 
@@ -790,10 +769,9 @@ Las letras o emojis sirven para probar, pero el juego final necesita piezas prop
 
 **Pasos**
 
-1. Diseña en Figma un icono por pieza (clásicas y nuevas) en blanco y negro, con el mismo estilo de línea.
-2. Las piezas nuevas deben distinguirse de un vistazo de las clásicas (forma o detalle de color).
-3. Exporta cada icono como SVG a `src/assets/pieces/` (nombre: `white-king.svg`…).
-4. Crea el componente `Piece.jsx` que muestra el SVG según `type` y `color`, y pásale a Aarón el cambio para usarlo dentro de Square.
+1. Diseña en Figma un icono por pieza en blanco y negro, con el mismo estilo de línea.
+2. Exporta cada icono como SVG a `src/assets/pieces/` (nombre: `white-king.svg`…).
+3. Crea el componente `Piece.jsx` que muestra el SVG según `type` y `color`, y pásale a Aarón el cambio para usarlo dentro de Square.
 
 **Está terminada cuando…**
 
@@ -827,22 +805,7 @@ Una pieza que «teletransporta» es confusa: el jugador no ve qué ha pasado, so
 - [ ] Se ve claramente qué pieza se ha movido y desde dónde.
 - [ ] La animación dura menos de 250 ms.
 
-### Tarea 1.C4 · Tests de las piezas nuevas
-
-**¿Para qué sirve?**
-Las piezas nuevas son las más propensas a errores porque no hay referencia externa. Los tests aseguran que se mueven exactamente como dice el diseño.
-
-**Pasos**
-
-1. Para cada pieza: un test en tablero vacío (número exacto de movimientos) y otro con piezas alrededor (no atraviesa, captura bien).
-2. Un test en el borde y la esquina del tablero (no sale fuera).
-3. Un test con getLegalMoves para comprobar que respeta el jaque.
-
-**Está terminada cuando…**
-
-- [ ] Al menos 4 tests por pieza nueva, en verde.
-
-> **Hito de la Fase 1:** se pueden mover piezas (clásicas y nuevas) por el tablero respetando las reglas, con selección, resaltado y animación.
+> **Hito de la Fase 1:** se pueden mover piezas por el tablero respetando las reglas, con selección, resaltado y animación.
 
 ---
 
@@ -944,7 +907,7 @@ La IA necesita una forma de puntuar un tablero: «¿cómo de buena es esta posic
 **Pasos**
 
 1. Crea `src/engine/ai/evaluate.js`.
-2. Asigna un valor a cada pieza (tabla de abajo). Para las piezas nuevas, decide un valor con MªJosé según lo potentes que sean.
+2. Asigna un valor a cada pieza (tabla de abajo).
 3. Puntuación base = suma de las piezas negras − suma de las piezas blancas.
 4. Añade el objetivo: si el nivel es reachSquare, resta puntos cuanto más cerca esté el rey blanco del objetivo (la IA quiere impedirlo).
 5. Si el estado es mate, devuelve un valor enorme (+/-100000).
@@ -952,7 +915,6 @@ La IA necesita una forma de puntuar un tablero: «¿cómo de buena es esta posic
 
 ```js
 const VALUES = { pawn: 100, knight: 320, bishop: 330, rook: 500, queen: 900, king: 0 };
-// + valores de las piezas nuevas
 
 export function evaluate(state) {
   let score = 0;
@@ -1332,15 +1294,14 @@ Los obstáculos tocan las reglas de movimiento, así que hay riesgo de romper co
 ### Tarea 3.C1 · Diseñar todos los niveles (levels.json)
 
 **¿Para qué sirve?**
-Los niveles son el contenido del juego. Deben tener una dificultad progresiva y enseñar poco a poco las piezas nuevas.
+Los niveles son el contenido del juego. Deben tener una dificultad progresiva.
 
 **Pasos**
 
 1. Planifica en una tabla (antes de escribir JSON) unos 9 niveles: 3 fáciles, 3 medios y 3 difíciles. Columnas: nombre, objetivo, piezas, obstáculos, maxMoves, qué enseña.
-2. Introduce las piezas nuevas de una en una: un nivel fácil para presentar cada una.
-3. Escribe los niveles en `levels.json` siguiendo la estructura de la Fase 0.
-4. Juega cada nivel al menos 3 veces. Si es demasiado fácil o imposible, ajústalo.
-5. Guarda la tabla de diseño en `docs/niveles.md`.
+2. Escribe los niveles en `levels.json` siguiendo la estructura de la Fase 0.
+3. Juega cada nivel al menos 3 veces. Si es demasiado fácil o imposible, ajústalo.
+4. Guarda la tabla de diseño en `docs/niveles.md`.
 
 **Está terminada cuando…**
 
@@ -1355,7 +1316,7 @@ Es la primera pantalla que ve el jugador: debe ser atractiva y llevar a todo lo 
 **Pasos**
 
 1. En `Menu.jsx`: título del juego, botón grande «Jugar» (→ /levels), «Ajustes» (→ /settings) y «Cómo jugar».
-2. «Cómo jugar» abre un Modal que explica el objetivo, las piezas nuevas (con sus iconos) y los obstáculos.
+2. «Cómo jugar» abre un Modal que explica el objetivo y los obstáculos.
 3. Añade un fondo o ilustración sencilla acorde al sistema de diseño.
 4. Si el jugador ya tiene progreso, el botón puede decir «Continuar» y llevar al último nivel desbloqueado.
 
@@ -1629,7 +1590,7 @@ Qué tareas dependen de otras. Si vas a retrasarte en una tarea de la que depend
 | Tarea | Depende de | Qué hacer mientras tanto |
 |---|---|---|
 | **Todo lo de la Fase 1** | Contrato del motor (0.B1) | Cerrar el contrato el martes de la semana 1. |
-| **Resaltado (1.B3) y piezas nuevas (1.C\*)** | Board mínimo (1.A2) | Aarón entrega un Board básico el martes de la semana 2. |
+| **Resaltado (1.B3) y visual de las piezas (1.C2, 1.C3)** | Board mínimo (1.A2) | Aarón entrega un Board básico el martes de la semana 2. |
 | **Integración IA (2.C2)** | Minimax (2.B2) | Usar la IA aleatoria (2.C1). |
 | **Desbloqueo de niveles (3.A2)** | Pantalla de niveles (2.C4) | Programar storage.js primero. |
 | **Obstáculos (3.B\*)** | rules.js y objectives.js estables | Diseñar el visual del obstáculo. |
