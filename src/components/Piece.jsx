@@ -7,7 +7,7 @@ const iconos = import.meta.glob('../assets/pieces/*.svg', {
 
 // Solo para el texto alternativo (lo que lee un lector de pantalla)
 const NOMBRE_VISIBLE = {
-  king: 'Rey', queen: 'Dama', rook: 'Torre',
+  king: 'Rey', queen: 'Reina', rook: 'Torre',
   bishop: 'Alfil', knight: 'Caballo', pawn: 'Peón',
 };
 
