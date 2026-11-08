@@ -16,14 +16,12 @@
 - [x] 0.B2 · Definir la forma del estado de la partida
 - [ ] 0.B3 · Crear GameContext y el reducer
 - [ ] 0.B4 · Adaptar el JSON de niveles
-- [ ] 0.B5 · Documentación: diagrama de componentes
 
 ### MªJosé
 
 - [x] 0.C1 · Adaptar los mockups a web
 - [x] 0.C2 · Crear el sistema de diseño
 - [ ] 0.C3 · Configurar la navegación (React Router)
-- [ ] 0.C4 · Documentación: diagrama de navegación
 
 ## Fase 1 — Núcleo jugable
 
