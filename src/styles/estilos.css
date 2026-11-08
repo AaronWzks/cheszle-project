@@ -1,0 +1,391 @@
+/* ==========================================================================
+   AJEDREZ WEB · Grupo 6 · estilos.css
+   Todos los valores salen de los mockups del Entregable 4 (1280x720 y 360x740).
+   Se importa UNA vez en src/main.jsx:   import './styles/estilos.css'
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. VARIABLES (los "tokens" del diseño)
+   Se declaran en :root y se usan con var(--nombre). Si cambias un color aquí,
+   cambia en toda la web.
+   -------------------------------------------------------------------------- */
+:root {
+  /* Colores de fondo */
+  --fondo:          #123A57;   /* color base de pantalla */
+  --fondo-claro:    #16456A;   /* arriba del degradado */
+  --fondo-oscuro:   #0F3250;   /* abajo del degradado */
+  --barra:          #0E2F47;   /* cabecera superior */
+  --panel:          #1B4B6E;   /* botones pequeños de la cabecera */
+
+  /* Colores de acción */
+  --amarillo:         #F2B63C; /* botón principal */
+  --amarillo-sombra:  #C9952A; /* "grosor" debajo del botón principal */
+  --verde:            #2FA89A; /* nivel superado, "Tu turno", barras */
+  --verde-oscuro:     #1E7F5C; /* iconos de la casilla objetivo */
+  --verde-suave:      #8FD9B6; /* casilla objetivo del tablero */
+  --rojo:             #D9534F; /* salir / peligro */
+  --rojo-oscuro:      #B3261E; /* texto de error */
+  --rojo-suave:       #FBE3E1; /* fondo del mensaje de error */
+  --naranja:          #E8833A; /* "Turno de la IA" */
+  --azul-mov:         #2F7FE0; /* puntos de movimientos válidos */
+
+  /* Tablero */
+  --casilla-clara:    #F0D9B5;
+  --casilla-oscura:   #B58863;
+  --borde-tablero:    #7A5636;
+  --muro:             #3B434B;
+  --prohibida:        #EBA9A2;
+
+  /* Textos */
+  --texto-oscuro:     #0B2A40; /* sobre fondo claro o amarillo */
+  --texto-medio:      #33546E; /* descripciones en tarjetas blancas */
+  --texto-claro:      #FFFFFF; /* sobre fondo oscuro */
+  --texto-suave:      #9FB6C8; /* textos secundarios sobre fondo oscuro */
+  --linea:            #DCE6EE; /* borde de botones secundarios */
+  --gris-claro:       #EAF0F5; /* fondos de iconos, selector */
+  --pista-barra:      #D7E3EC; /* fondo de las barras de progreso */
+
+  /* Tipografía */
+  --fuente: Arial, "Liberation Sans", Helvetica, sans-serif;
+  --t-titulo-grande: 46px;     /* "AJEDREZ" */
+  --t-titulo:        44px;     /* "¡Nivel superado!" */
+  --t-h1:            26px;     /* "Pausa" */
+  --t-h2:            22px;     /* título de cabecera */
+  --t-h3:            20px;     /* título de tarjeta */
+  --t-boton:         18px;
+  --t-texto:         16px;     /* texto normal */
+  --t-pequeno:       14px;     /* descripciones, atajos */
+  --t-mini:          13px;
+
+  /* Formas */
+  --radio-boton:   12px;
+  --radio-tarjeta: 14px;
+  --radio-pildora: 16px;
+  --radio-cuadro:  10px;       /* botones de la cabecera */
+  --alto-boton:    58px;       /* mínimo recomendado 48px */
+  --alto-cabecera: 64px;
+
+  /* Espacios (escala de 8 en 8) */
+  --e1: 8px;  --e2: 16px;  --e3: 24px;  --e4: 32px;  --e5: 48px;
+
+  /* Tablero: tamaño de casilla (70px en escritorio, se reduce en móvil) */
+  --casilla: 70px;
+}
+
+/* --------------------------------------------------------------------------
+   2. BASE (reglas generales)
+   -------------------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }   /* el padding no agranda las cajas */
+
+html, body, #root { height: 100%; }
+
+body {
+  margin: 0;                                  /* quita el margen que trae el navegador */
+  font-family: var(--fuente);
+  font-size: var(--t-texto);
+  font-weight: 700;                           /* Arial en negrita, como en el diseño */
+  color: var(--texto-claro);
+  background: var(--fondo);                   /* respaldo si falla el degradado */
+  background-image: linear-gradient(180deg, var(--fondo-claro), var(--fondo-oscuro));
+  background-attachment: fixed;
+}
+
+button { font: inherit; cursor: pointer; }
+h1, h2, h3, p { margin: 0; }
+
+/* Foco visible para quien usa teclado (Tab) */
+:focus-visible { outline: 3px solid var(--amarillo); outline-offset: 3px; }
+
+/* --------------------------------------------------------------------------
+   3. ESTRUCTURA DE PÁGINA
+   -------------------------------------------------------------------------- */
+.app { min-height: 100%; display: flex; flex-direction: column; }
+
+.cabecera {
+  height: var(--alto-cabecera);
+  background: var(--barra);
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;       /* botón | título | botón */
+  align-items: center;
+  padding: 0 var(--e2);
+}
+.cabecera__titulo { text-align: center; font-size: var(--t-h2); }
+
+.btn-cuadro {                                  /* botón ‹ y botón pausa */
+  width: 40px; height: 40px;
+  background: var(--panel);
+  color: var(--texto-claro);
+  border: 0;
+  border-radius: var(--radio-cuadro);
+  font-size: 30px; line-height: 1;
+}
+
+.pantalla {                                    /* contenido centrado */
+  flex: 1;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--e3);
+}
+.pantalla--centrada {                          /* Inicio, Superado, No superado */
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; gap: var(--e2);
+}
+
+/* --------------------------------------------------------------------------
+   4. BOTONES
+   -------------------------------------------------------------------------- */
+.btn {
+  display: block;
+  width: 100%;
+  min-height: var(--alto-boton);
+  padding: 0 var(--e3);
+  border-radius: var(--radio-boton);
+  font-size: var(--t-boton);
+  font-weight: 700;
+  text-align: center;
+  transition: transform .1s, box-shadow .1s;
+}
+
+/* Principal: amarillo con "sombra sólida" debajo */
+.btn--principal {
+  background: var(--amarillo);
+  color: var(--texto-oscuro);
+  border: 0;
+  box-shadow: 0 4px 0 var(--amarillo-sombra);
+}
+.btn--principal:hover   { filter: brightness(1.05); }
+.btn--principal:active  { transform: translateY(4px); box-shadow: none; } /* se "hunde" */
+
+/* Secundario: transparente con borde claro (sobre fondo oscuro) */
+.btn--secundario {
+  background: transparent;
+  color: var(--texto-claro);
+  border: 2px solid var(--linea);
+}
+.btn--secundario:hover { background: rgba(255,255,255,.08); }
+
+/* Secundario dentro de una ventana blanca */
+.btn--secundario-claro { color: #123A57; border-color: #123A57; }
+.btn--secundario-claro:hover { background: var(--gris-claro); }
+
+/* Peligro */
+.btn--peligro {
+  background: var(--rojo); color: var(--texto-claro); border: 0;
+  box-shadow: 0 4px 0 #A93F3B;
+}
+.btn--peligro-borde { background: transparent; color: var(--rojo-oscuro); border: 2px solid var(--rojo); }
+
+.btn__sub { display: block; font-size: var(--t-mini); font-weight: 400; }  /* "Nivel 3" bajo Continuar */
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+
+/* Fila de dos botones (Cancelar / Salir) */
+.fila-botones { display: flex; gap: var(--e2); width: 100%; }
+.fila-botones .btn { flex: 1; }
+
+/* --------------------------------------------------------------------------
+   5. PANTALLA DE INICIO
+   -------------------------------------------------------------------------- */
+.logo {
+  width: 144px; height: 144px; border-radius: 50%;
+  background: #1E6A78; border: 3px solid var(--verde);
+  display: grid; place-items: center; font-size: 88px; color: var(--texto-claro);
+}
+.inicio__titulo { font-size: var(--t-titulo-grande); letter-spacing: 10px; }
+.inicio__subtitulo { font-size: var(--t-boton); font-weight: 400; color: var(--texto-suave); }
+.menu { width: min(360px, 100%); display: flex; flex-direction: column; gap: var(--e2); margin-top: var(--e3); }
+.pie { font-size: var(--t-pequeno); font-weight: 400; color: var(--texto-suave); }
+
+/* --------------------------------------------------------------------------
+   6. TARJETAS (cajas blancas) Y VENTANAS (modal)
+   -------------------------------------------------------------------------- */
+.tarjeta {
+  background: #fff;
+  color: var(--texto-oscuro);
+  border-radius: var(--radio-tarjeta);
+  padding: var(--e3);
+}
+.tarjeta__titulo { font-size: var(--t-h3); margin-bottom: var(--e2); }
+.tarjeta__texto  { font-size: var(--t-pequeno); font-weight: 400; color: var(--texto-medio); }
+
+.modal-fondo {                                  /* capa oscura detrás de la ventana */
+  position: fixed; inset: 0;
+  background: rgba(6, 18, 28, .64);
+  display: grid; place-items: center;
+  padding: var(--e2);
+  z-index: 10;
+}
+.modal {
+  width: min(520px, 100%);
+  background: #fff; color: var(--texto-oscuro);
+  border-radius: var(--radio-tarjeta);
+  padding: var(--e4);
+  display: flex; flex-direction: column; gap: var(--e2);
+  text-align: center;
+}
+.modal__titulo { font-size: 24px; }
+.modal__texto  { font-size: 15px; font-weight: 400; color: var(--texto-medio); }
+.modal__etiqueta { font-size: var(--t-mini); letter-spacing: 1px; color: #127A6E; text-align: left; }
+
+/* --------------------------------------------------------------------------
+   7. PARTIDA
+   -------------------------------------------------------------------------- */
+.partida {
+  display: grid;
+  grid-template-columns: auto 1fr;              /* tablero | panel */
+  gap: var(--e5);
+  align-items: start;
+  justify-content: center;
+}
+.partida__izq { display: flex; flex-direction: column; gap: var(--e1); align-items: center; }
+
+.objetivo {
+  width: 100%; background: #fff; color: var(--texto-oscuro);
+  border-radius: var(--radio-boton); padding: 10px var(--e2);
+  display: flex; align-items: center; gap: 12px; font-size: 15px;
+}
+.objetivo__icono {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: #BFE8D4; color: var(--verde-oscuro); display: grid; place-items: center;
+}
+
+.turno {                                         /* píldora "Tu turno" */
+  height: 32px; padding: 0 var(--e3);
+  border-radius: var(--radio-pildora);
+  background: var(--verde); color: var(--texto-oscuro);
+  font-size: 15px; display: inline-flex; align-items: center;
+}
+.turno--ia { background: var(--naranja); }
+
+/* Tablero 6x6 con CSS Grid */
+.tablero {
+  display: grid;
+  grid-template-columns: repeat(6, var(--casilla));
+  grid-auto-rows: var(--casilla);
+  border: 4px solid var(--borde-tablero);
+  border-radius: 6px;
+}
+.casilla {
+  display: grid; place-items: center;
+  font-size: calc(var(--casilla) * .68);         /* pieza proporcional a la casilla */
+  line-height: 1; padding: 0; border: 0; position: relative;
+}
+/* Las clases .clara / .oscura las pone React según (fila + columna) % 2 */
+.tablero .casilla.clara  { background: var(--casilla-clara); }
+.tablero .casilla.oscura { background: var(--casilla-oscura); }
+.casilla--muro       { background: var(--muro) !important; }
+.casilla--prohibida  { background: var(--prohibida) !important; color: var(--rojo-oscuro); }
+.casilla--objetivo   { background: var(--verde-suave) !important; color: var(--verde-oscuro); }
+.casilla--seleccionada { outline: 4px solid var(--azul-mov); outline-offset: -4px; }
+.casilla--ia-ultima  { box-shadow: inset 0 0 0 100px rgba(242, 215, 74, .75); }
+.casilla--valida::after {                        /* punto azul de movimiento válido */
+  content: ""; width: 13px; height: 13px; border-radius: 50%; background: var(--azul-mov);
+  position: absolute;
+}
+.pieza--negra  { color: #141414; }
+.pieza--blanca { color: #fff; -webkit-text-stroke: 1.5px #123A57; }   /* contorno para que se vea sobre casilla clara */
+
+.mensaje {                                       /* mensaje bajo el tablero */
+  width: 100%; background: #fff; color: var(--texto-oscuro);
+  border-radius: 10px; padding: 12px var(--e2); font-size: 15px; font-weight: 400;
+}
+.mensaje--error { background: var(--rojo-suave); }
+.mensaje--error strong { color: var(--rojo-oscuro); }
+
+/* Panel derecho: reglas, Pista, Ayuda */
+.partida__der { display: flex; flex-direction: column; gap: var(--e2); width: min(500px, 100%); }
+.regla { display: flex; align-items: center; gap: var(--e2); margin-bottom: var(--e2); }
+.regla__icono {
+  width: 40px; height: 40px; border-radius: 6px; flex: none;
+  display: grid; place-items: center; font-size: 26px;
+}
+.regla__nombre { font-size: var(--t-texto); }
+.atajos { font-size: var(--t-pequeno); font-weight: 400; color: var(--texto-suave); }
+
+/* --------------------------------------------------------------------------
+   8. MAPA DE NIVELES
+   -------------------------------------------------------------------------- */
+.mapa { position: relative; height: 360px; max-width: 1100px; margin: 0 auto; }
+.nivel {
+  position: absolute; width: 68px; height: 68px; border-radius: 50%;
+  display: grid; place-items: center; font-size: 28px; border: 3px solid #fff;
+  background: var(--verde); color: var(--texto-oscuro);
+  transform: translate(-50%, -50%);              /* centra el círculo en su punto */
+}
+.nivel--actual   { background: var(--amarillo); width: 80px; height: 80px; font-size: 34px;
+                   box-shadow: 0 0 0 6px var(--fondo-claro), 0 0 0 9px var(--amarillo); border: 0; }
+.nivel--bloqueado { background: #6F8499; border: 2px solid var(--texto-suave); color: #E8EEF3; }
+.estrellas { color: var(--amarillo); font-size: 18px; }
+
+.progreso { max-width: 520px; margin: var(--e4) auto 0; }
+.barra { height: 10px; border-radius: 5px; background: var(--pista-barra); overflow: hidden; margin-top: 12px; }
+.barra__relleno { height: 100%; background: var(--verde); }   /* width: 33% desde React */
+
+/* --------------------------------------------------------------------------
+   9. RESULTADO (superado / no superado)
+   -------------------------------------------------------------------------- */
+.resultado__titulo { font-size: var(--t-titulo); }
+.resultado__estrellas { font-size: 74px; color: var(--amarillo); letter-spacing: 8px; }
+.resultado__puntos { font-size: 34px; color: #8FE0E6; }
+.etiqueta-guardado {
+  background: var(--verde); color: var(--texto-oscuro); font-size: 15px;
+  height: 36px; padding: 0 var(--e3); border-radius: 18px; display: inline-flex; align-items: center;
+}
+.resultado__acciones { width: min(480px, 100%); display: flex; flex-direction: column; gap: var(--e2); margin-top: var(--e2); }
+
+/* --------------------------------------------------------------------------
+   10. AJUSTES (filas con interruptor, deslizador y selector)
+   -------------------------------------------------------------------------- */
+.ajustes { width: min(520px, 100%); margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+.ajuste { display: flex; justify-content: space-between; align-items: center; gap: var(--e2); }
+.ajuste--columna { flex-direction: column; align-items: stretch; }
+.ajuste label { font-size: var(--t-texto); }
+
+input[type="range"] { width: 100%; accent-color: var(--verde); }
+
+.selector { display: flex; gap: 2px; background: var(--gris-claro); border-radius: 8px; padding: 2px; }
+.selector button {
+  flex: 1; height: 38px; border: 0; border-radius: 8px; background: transparent;
+  color: var(--texto-oscuro); font-size: 15px; font-weight: 700;
+}
+.selector button[aria-pressed="true"] { background: var(--verde); }
+
+.interruptor {                                  /* toggle 60x30 */
+  width: 60px; height: 30px; border-radius: 15px; border: 0; background: #C5D3DE; position: relative;
+}
+.interruptor::after {
+  content: ""; position: absolute; top: 4px; left: 4px; width: 22px; height: 22px;
+  border-radius: 50%; background: #fff; transition: left .15s;
+}
+.interruptor[aria-checked="true"] { background: var(--verde); }
+.interruptor[aria-checked="true"]::after { left: 34px; }
+
+/* --------------------------------------------------------------------------
+   11. AYUDA
+   -------------------------------------------------------------------------- */
+.ayuda { display: grid; grid-template-columns: 1.3fr 1fr; gap: var(--e3); align-items: start; }
+.pieza-fila { display: flex; align-items: center; gap: var(--e2); padding: 12px 0; border-bottom: 1px solid #E1E9EF; }
+.pieza-fila:last-child { border-bottom: 0; }
+.pieza-fila__icono { width: 48px; height: 48px; border-radius: 10px; background: var(--gris-claro);
+                     display: grid; place-items: center; font-size: 34px; flex: none; }
+.tecla { display: inline-block; min-width: 64px; text-align: center; padding: 5px 8px; margin-right: 12px;
+         background: var(--gris-claro); border: 1px solid #C5D3DE; border-radius: 6px; font-size: var(--t-pequeno); }
+
+/* --------------------------------------------------------------------------
+   12. RESPONSIVE (móvil): se aplica cuando la pantalla mide 700px o menos
+   -------------------------------------------------------------------------- */
+@media (max-width: 700px) {
+  :root { --casilla: calc((100vw - 56px) / 6); }   /* el tablero ocupa todo el ancho */
+  .pantalla { padding: var(--e2) 12px; }
+  .partida { grid-template-columns: 1fr; gap: var(--e2); }
+  .partida__der { order: 2; }
+  .partida__der .tarjeta { display: none; }        /* oculta "Reglas" en móvil */
+  .partida__botones { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
+  .ayuda { grid-template-columns: 1fr; }
+  .resultado__titulo { font-size: 32px; }
+  .inicio__titulo { font-size: 36px; letter-spacing: 6px; }
+}
+
+/* Respeta a quien desactiva las animaciones (también el ajuste "Animaciones") */
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+body.sin-animaciones * { transition: none !important; animation: none !important; }
