@@ -44,7 +44,7 @@ const GameState = {
 | Campo | Qué es |
 |---|---|
 | `id` | Identificador único de la pieza en la partida (útil como `key` de React y para animaciones). |
-| `type` | Tipo de pieza: `king`, `queen`, `rook`, `bishop`, `knight`, `pawn` (y las piezas nuevas). |
+| `type` | Tipo de pieza: `king`, `queen`, `rook`, `bishop`, `knight`, `pawn`. |
 | `color` | `white` o `black`. |
 
 ### Objetivo (`Objective`)
