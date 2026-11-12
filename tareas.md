@@ -25,7 +25,7 @@
 
 ### Aarón
 
-- [ ] 1.A1 · Lógica del tablero (board.js)
+- [x] 1.A1 · Lógica del tablero (board.js)
 - [ ] 1.A2 · Componentes Board y Square
 - [ ] 1.A3 · Tests del componente Board
 
