@@ -183,3 +183,31 @@ el modo de vigilancia de Vitest.
 El módulo proporciona las utilidades de la tarea 1.A1. Su integración con las
 funciones provisionales de `engine/index.js` se hará cuando corresponda; añadir
 estas utilidades todavía no cambia lo que aparece en la pantalla del juego.
+
+## Pruebas del componente Board: tarea 1.A3
+
+`src/components/Board.test.jsx` comprueba que el tablero del estado de ejemplo
+genera 64 botones y que el callback no se ejecuta durante el dibujo.
+
+Cada prueba monta `Board` dentro de `GameProvider` con una copia nueva del estado
+obtenida mediante `createMockState()`. `vi.fn()` registra las llamadas al callback.
+
+Los clics se simulan con `fireEvent.click` en las cuatro esquinas y en las posiciones
+de las dos piezas del ejemplo. Se comprueba que cada pulsación llama una sola vez
+a `onSquareClick` y entrega el objeto `{ x, y }` correcto.
+
+Las casillas se recorren por filas. Para el tablero de prueba de ocho columnas,
+el botón correspondiente se obtiene mediante el índice `y * 8 + x`.
+
+Para ejecutar únicamente estas pruebas desde la raíz del proyecto:
+
+```bash
+npm test -- --run src/components/Board.test.jsx
+```
+
+Para ejecutar todos los tests y comprobar las reglas de código:
+
+```bash
+npm test -- --run
+npm run lint
+```
