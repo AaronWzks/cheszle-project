@@ -1,0 +1,62 @@
+.square {
+  display: grid;
+  place-items: center;
+  position: relative;
+  width: var(--casilla);
+  height: var(--casilla);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  color: var(--texto-oscuro);
+}
+
+.light {
+  background-color: var(--casilla-clara);
+}
+
+.dark {
+  background-color: var(--casilla-oscura);
+}
+
+.square img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.highlighted::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 13px;
+  height: 13px;
+  margin: auto;
+  border: 2px solid var(--texto-claro);
+  border-radius: 50%;
+  background-color: var(--azul-mov);
+  pointer-events: none;
+}
+
+.selected {
+  box-shadow: inset 0 0 0 4px var(--texto-oscuro);
+}
+
+.square:focus-visible {
+  outline: 3px solid var(--amarillo);
+  outline-offset: -3px;
+}
+
+/* El lector de pantalla lee las coordenadas, aunque no se dibujen. */
+.coordinates {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
