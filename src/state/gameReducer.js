@@ -14,7 +14,8 @@ export function createInitialState(game = createGame(DEFAULT_LEVEL_ID)) {
 
 /**
  * Única función que puede cambiar el estado de la partida.
- * Acciones: { type: 'START', levelId } | { type: 'SELECT', square } | { type: 'MOVE', move }
+ * Acciones: { type: 'START', levelId } | { type: 'SELECT', square } | { type: 'DESELECT' }
+ *   | { type: 'MOVE', move }
  */
 export function gameReducer(state, action) {
   switch (action.type) {
@@ -26,6 +27,8 @@ export function gameReducer(state, action) {
         selected: action.square,
         highlights: getLegalMoves(state, action.square),
       };
+    case 'DESELECT':
+      return { ...state, selected: null, highlights: [] };
     case 'MOVE':
       return { ...applyMove(state, action.move), selected: null, highlights: [] };
     default:
