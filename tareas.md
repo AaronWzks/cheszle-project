@@ -34,7 +34,7 @@
 - [x] 1.B1 · Movimientos de las piezas clásicas
 - [x] 1.B2 · Reglas: movimientos legales, jaque y jaque mate (rules.js)
 - [x] 1.B3 · Interfaz: seleccionar y resaltar movimientos
-- [ ] 1.B4 · Documentación: reglas del juego
+- [x] 1.B4 · Documentación: reglas del juego
 
 ### MªJosé
 
