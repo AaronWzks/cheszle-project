@@ -38,7 +38,9 @@ describe('gameReducer', () => {
   it('SELECT guarda la casilla y sus movimientos legales', () => {
     const state = gameReducer(createInitialState(), { type: 'SELECT', square: KING });
     expect(state.selected).toEqual(KING);
-    expect(state.highlights).toEqual([{ x: 4, y: 1 }]);
+    // Rey blanco en (4,0) con el tablero de easy-1: las 5 casillas de alrededor.
+    expect(state.highlights).toHaveLength(5);
+    expect(state.highlights).toContainEqual({ x: 4, y: 1 });
   });
 
   it('SELECT en una casilla vacía no resalta nada', () => {
