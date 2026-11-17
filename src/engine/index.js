@@ -12,6 +12,8 @@
  * Tipos (GameState, Position, Move...): ver ./mockState.js y docs/estado.md.
  */
 import { createMockState } from './mockState';
+import { getPiece, movePiece, setPiece } from './board';
+import { getLegalMoves as rulesGetLegalMoves, isLegalMove } from './rules';
 
 /** @typedef {import('./mockState').GameState} GameState */
 /** @typedef {import('./mockState').Position} Position */
@@ -36,26 +38,30 @@ export function createGame(levelId) {
  * @returns {Position[]} Lista vacía si no hay pieza o no tiene movimientos.
  */
 export function getLegalMoves(state, from) {
-  // TODO (Fase 1, tarea 1.B2): calcular con pieces/ y rules.js.
-  const piece = state.board[from.y]?.[from.x];
-  if (!piece) return [];
-  const to = { x: from.x, y: from.y + 1 };
-  return to.y < state.board.length ? [to] : [];
+  return rulesGetLegalMoves(state, from);
 }
 
 /**
  * Aplica una jugada y devuelve un estado NUEVO (no modifica el que recibe):
  * mueve la pieza, cambia el turno, suma la jugada y la guarda en el historial.
+ * Si un peón llega a la última fila corona en dama (conserva su id).
+ *
+ * Si la jugada no es válida (no hay pieza, no es su turno o no es legal)
+ * devuelve el MISMO estado sin cambios, para que la UI no se rompa.
  * @param {GameState} state
  * @param {Move} move
  * @returns {GameState}
  */
 export function applyMove(state, move) {
-  // TODO (Fase 1): validar la jugada con rules.js.
   const { from, to } = move;
-  const board = state.board.map((row) => [...row]);
-  board[to.y][to.x] = board[from.y][from.x];
-  board[from.y][from.x] = null;
+  const piece = getPiece(state.board, from);
+  if (!piece || piece.color !== state.turn || !isLegalMove(state, move)) return state;
+
+  let board = movePiece(state.board, from, to);
+  const lastRow = piece.color === 'white' ? board.length - 1 : 0;
+  if (piece.type === 'pawn' && to.y === lastRow) {
+    board = setPiece(board, to, { ...piece, type: 'queen' });
+  }
 
   return {
     ...state,
