@@ -49,6 +49,14 @@ describe('gameReducer', () => {
     expect(state.highlights).toEqual([]);
   });
 
+  it('DESELECT quita la selección y los resaltados', () => {
+    const selected = gameReducer(createInitialState(), { type: 'SELECT', square: KING });
+    const state = gameReducer(selected, { type: 'DESELECT' });
+    expect(state.selected).toBe(null);
+    expect(state.highlights).toEqual([]);
+    expect(state.board).toBe(selected.board);
+  });
+
   it('MOVE aplica la jugada, cambia el turno y limpia la selección', () => {
     const selected = gameReducer(createInitialState(), { type: 'SELECT', square: KING });
     const to = { x: 4, y: 1 };

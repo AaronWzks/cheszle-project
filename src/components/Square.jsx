@@ -37,7 +37,8 @@ export default function Square(props) {
   const classes = [styles.square, colorClass];
 
   if (isHighlighted) {
-    classes.push(styles.highlighted);
+    // Casilla vacía: punto en el centro. Con pieza (enemiga): anillo de captura.
+    classes.push(piece !== null ? styles.capture : styles.highlighted);
   }
 
   if (isSelected) {
