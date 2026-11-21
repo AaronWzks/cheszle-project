@@ -13,7 +13,13 @@
  */
 import { createMockState } from './mockState';
 import { getPiece, movePiece, setPiece } from './board';
-import { getLegalMoves as rulesGetLegalMoves, isLegalMove } from './rules';
+import {
+  getLegalMoves as rulesGetLegalMoves,
+  isLegalMove,
+  isCheckmate,
+  hasAnyLegalMove,
+} from './rules';
+import { isObjectiveMet } from './objectives';
 
 /** @typedef {import('./mockState').GameState} GameState */
 /** @typedef {import('./mockState').Position} Position */
@@ -73,13 +79,30 @@ export function applyMove(state, move) {
 }
 
 /**
- * Comprueba cómo va la partida.
+ * Comprueba cómo va la partida. Cumplir el objetivo tiene prioridad.
+ * El mate y la falta de jugadas del jugador se comprueban en su turno.
+ * El límite solo se supera cuando moveCount es mayor que maxMoves.
  * @param {GameState} state
  * @returns {Status} 'playing' | 'won' | 'lost'
  */
-// eslint-disable-next-line no-unused-vars
 export function checkStatus(state) {
-  // TODO (Fase 2, tarea 2.A1): usar objectives.js y rules.js.
+  if (isObjectiveMet(state)) {
+    return 'won';
+  }
+
+  if (state.turn === 'white') {
+    if (isCheckmate(state, 'white')) {
+      return 'lost';
+    }
+
+    if (!hasAnyLegalMove(state, 'white')) {
+      return 'lost';
+    }
+  }
+
+  if (state.moveCount > state.maxMoves) {
+    return 'lost';
+  }
   return 'playing';
 }
 

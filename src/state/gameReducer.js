@@ -1,4 +1,4 @@
-import { createGame, applyMove, getLegalMoves } from '../engine';
+import { createGame, applyMove, getLegalMoves, checkStatus } from '../engine';
 
 /** Nivel con el que arranca la app hasta que el jugador elige otro. */
 export const DEFAULT_LEVEL_ID = 'easy-1';
@@ -29,8 +29,16 @@ export function gameReducer(state, action) {
       };
     case 'DESELECT':
       return { ...state, selected: null, highlights: [] };
-    case 'MOVE':
-      return { ...applyMove(state, action.move), selected: null, highlights: [] };
+    case 'MOVE': {
+      const nextState = applyMove(state, action.move);
+
+      return {
+        ...nextState,
+        status: checkStatus(nextState),
+        selected: null,
+        highlights: [],
+      };
+    }
     default:
       return state;
   }

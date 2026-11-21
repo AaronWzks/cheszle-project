@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { gameReducer, createInitialState, DEFAULT_LEVEL_ID } from './gameReducer';
 import { createMockState } from '../engine/mockState';
+import { createBoard } from '../engine/board';
 
 const KING = { x: 4, y: 0 };
 const EMPTY = { x: 0, y: 0 };
@@ -82,5 +83,94 @@ describe('gameReducer', () => {
   it('con una acción desconocida devuelve el mismo estado', () => {
     const previous = createInitialState();
     expect(gameReducer(previous, { type: 'NO_EXISTE' })).toBe(previous);
+  });
+});
+
+describe('MOVE actualiza el resultado de la partida', function () {
+  it('gana al mover el rey a la casilla objetivo y conserva el estado anterior', function () {
+    const previous = createInitialState(createMockState());
+    previous.objective.target = { x: 4, y: 1 };
+    previous.selected = { x: 4, y: 0 };
+    previous.highlights = [{ x: 4, y: 1 }];
+    const snapshot = structuredClone(previous);
+
+    const next = gameReducer(previous, {
+      type: 'MOVE',
+      move: { from: { x: 4, y: 0 }, to: { x: 4, y: 1 } },
+    });
+
+    expect(next.board[1][4]).toMatchObject({ id: 'w-king' });
+    expect(next.status).toBe('won');
+    expect(next.selected).toBe(null);
+    expect(next.highlights).toEqual([]);
+    expect(previous).toEqual(snapshot);
+  });
+
+  it('mantiene playing tras una jugada que no termina la partida', function () {
+    const previous = createInitialState(createMockState());
+
+    const next = gameReducer(previous, {
+      type: 'MOVE',
+      move: { from: { x: 4, y: 0 }, to: { x: 4, y: 1 } },
+    });
+
+    expect(next.turn).toBe('black');
+    expect(next.status).toBe('playing');
+  });
+
+  it('detecta el mate blanco causado por una jugada legal negra', function () {
+    const game = createMockState();
+    game.board = createBoard(8, 8);
+    game.obstacles = [];
+    game.turn = 'black';
+    game.board[0][0] = { id: 'w-king', type: 'king', color: 'white' };
+    game.board[2][1] = { id: 'b-queen', type: 'queen', color: 'black' };
+    game.board[2][2] = { id: 'b-king', type: 'king', color: 'black' };
+    const previous = createInitialState(game);
+
+    const next = gameReducer(previous, {
+      type: 'MOVE',
+      move: { from: { x: 1, y: 2 }, to: { x: 1, y: 1 } },
+    });
+
+    expect(next.board[1][1]).toMatchObject({ id: 'b-queen' });
+    expect(next.turn).toBe('white');
+    expect(next.status).toBe('lost');
+  });
+
+  it('detecta el ahogado blanco causado por una jugada legal negra', function () {
+    const game = createMockState();
+    game.board = createBoard(8, 8);
+    game.obstacles = [];
+    game.turn = 'black';
+    game.board[0][0] = { id: 'w-king', type: 'king', color: 'white' };
+    game.board[1][3] = { id: 'b-queen', type: 'queen', color: 'black' };
+    game.board[7][7] = { id: 'b-king', type: 'king', color: 'black' };
+    const previous = createInitialState(game);
+
+    const next = gameReducer(previous, {
+      type: 'MOVE',
+      move: { from: { x: 3, y: 1 }, to: { x: 2, y: 1 } },
+    });
+
+    expect(next.board[1][2]).toMatchObject({ id: 'b-queen' });
+    expect(next.turn).toBe('white');
+    expect(next.status).toBe('lost');
+  });
+
+  it('pierde si la nueva jugada supera maxMoves, aunque ahora toque a las negras', function () {
+    const previous = createInitialState(createMockState());
+    previous.moveCount = previous.maxMoves;
+
+    const next = gameReducer(previous, {
+      type: 'MOVE',
+      move: { from: { x: 4, y: 0 }, to: { x: 4, y: 1 } },
+    });
+
+    expect(next.moveCount).toBe(previous.maxMoves + 1);
+    expect(next.turn).toBe('black');
+    expect(next.status).toBe('lost');
+    expect(previous.moveCount).toBe(previous.maxMoves);
+    expect(previous.status).toBe('playing');
   });
 });
