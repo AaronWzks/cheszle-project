@@ -4,22 +4,41 @@ import Game from './Game';
 import { GameProvider } from '../state/GameContext';
 import { createMockState } from '../engine/mockState';
 import { createBoard, setPiece } from '../engine/board';
+import { MemoryRouter } from 'react-router-dom';
 
 // Estado de ejemplo (easy-1): rey blanco en (4,0) y torre negra en (0,5).
 function renderGame(initial = createMockState()) {
   render(
-    <GameProvider initial={initial}>
-      <Game />
-    </GameProvider>,
+    <MemoryRouter>
+      <GameProvider initial={initial}>
+        <Game />
+      </GameProvider>
+    </MemoryRouter>,
   );
 }
 
-const square = (x, y) => screen.getAllByRole('button')[y * 8 + x];
+function boardSquares() {
+  const board = screen.getByRole('group', {
+    name: 'Tablero de ajedrez',
+  });
+
+  return within(board).getAllByRole('button');
+}
+
+function square(x, y) {
+  return boardSquares()[y * 8 + x];
+}
+
 const click = (x, y) => fireEvent.click(square(x, y));
 const isSelected = (x, y) => square(x, y).getAttribute('aria-pressed') === 'true';
 const isTarget = (x, y) => /highlighted|capture/.test(square(x, y).className);
-const targets = () =>
-  screen.getAllByRole('button').filter((b) => /highlighted|capture/.test(b.className));
+
+function targets() {
+  return boardSquares().filter(function (button) {
+    return /highlighted|capture/.test(button.className);
+  });
+}
+
 const pieceIn = (x, y) => within(square(x, y)).queryByRole('img')?.getAttribute('alt') ?? null;
 
 describe('Game: seleccionar y mover', () => {

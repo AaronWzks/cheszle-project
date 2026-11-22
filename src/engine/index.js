@@ -21,6 +21,8 @@ import {
 } from './rules';
 import { isObjectiveMet } from './objectives';
 
+export { isInCheck } from './rules';
+
 /** @typedef {import('./mockState').GameState} GameState */
 /** @typedef {import('./mockState').Position} Position */
 /** @typedef {import('./mockState').Move} Move */

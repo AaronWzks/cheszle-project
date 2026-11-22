@@ -1,6 +1,7 @@
 import Board from '../components/Board';
 import { getPiece } from '../engine/board';
 import { useGame } from '../state/GameContext';
+import HUD from '../components/HUD';
 
 const samePos = (a, b) => a !== null && a.x === b.x && a.y === b.y;
 
@@ -27,10 +28,8 @@ export default function Game() {
   }
 
   return (
-    <main className="pantalla pantalla--centrada">
-      <h1>Juego</h1>
-
+    <HUD>
       <Board onSquareClick={handleSquareClick} />
-    </main>
+    </HUD>
   );
 }

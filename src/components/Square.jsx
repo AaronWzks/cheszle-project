@@ -9,6 +9,7 @@ import styles from './Square.module.css';
  * @param {import('../engine/mockState.js').Piece | null} props.piece
  * @param {boolean} [props.isHighlighted=false] Es un destino resaltado.
  * @param {boolean} [props.isSelected=false] Es la casilla seleccionada.
+ * @param {boolean} [props.isTarget=false] Es la casilla objetivo del nivel.
  * @param {boolean} [props.isLastMove=false] Es el origen o el destino de la última jugada.
  * @param {import('../engine/mockState.js').Position | null} [props.moveFrom=null]
  *   Si la pieza acaba de llegar aquí, casilla desde la que viene (para animarla).
@@ -29,10 +30,16 @@ export default function Square(props) {
     isSelected = false;
   }
 
-  //Leemos las dos props nuevas. === true hace que, si no nos la pasan, valga false.
-  const isLastMove = props.isLastMove == true;
-  const moveFrom = props.moveFrom ?? null;
+  // DE AARÓN
+  let isTarget = props.isTarget;
 
+  if (isTarget === undefined) {
+    isTarget = false;
+  }
+
+  //Leemos las dos props nuevas. === true hace que, si no nos la pasan, valga false.
+  const isLastMove = props.isLastMove === true;
+  const moveFrom = props.moveFrom ?? null;
 
   const onClick = props.onClick;
 
@@ -43,6 +50,9 @@ export default function Square(props) {
   }
 
   const classes = [styles.square, colorClass];
+  if (isTarget) {
+    classes.push(styles.target);
+  }
 
   if (isHighlighted) {
     // Casilla vacía: punto en el centro. Con pieza (enemiga): anillo de captura.
@@ -51,24 +61,26 @@ export default function Square(props) {
 
   //classes es una lista con las clases CSS de la casilla.
   //Si es origen o destino de la última jugada, le añadimos (push) la clase lastMove
-   if (isLastMove) {                    
-    classes.push(styles.lastMove);     
-  }     
+  if (isLastMove) {
+    classes.push(styles.lastMove);
+  }
 
   if (isSelected) {
     classes.push(styles.selected);
   }
 
   return (
-    <button
-      type="button"
-      className={classes.join(' ')}
-      aria-pressed={isSelected}
-      onClick={onClick}
-    >
+    <button type="button" className={classes.join(' ')} aria-pressed={isSelected} onClick={onClick}>
       <span className={styles.coordinates}>
-        Casilla ({x}, {y})
+        Casilla ({x}, {y}){isTarget && ' — Casilla objetivo'}
       </span>
+
+      {/* DE AARÓN: estrella en la casilla objetivo */}
+      {isTarget && (
+        <span className={styles.targetMarker} aria-hidden="true">
+          ★
+        </span>
+      )}
 
       {piece !== null && (
         <Piece
