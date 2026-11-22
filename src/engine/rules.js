@@ -78,6 +78,25 @@ export function isLegalMove(state, { from, to }) {
 }
 
 /**
+ * Todas las jugadas legales de `color`, recorriendo sus piezas fila a fila.
+ * La usa la IA (minimax) para generar las jugadas de cada nodo.
+ * @param {GameState} state
+ * @param {Color} color
+ * @returns {{ from: Position, to: Position }[]} [] si no tiene ninguna.
+ */
+export function getAllLegalMoves(state, color) {
+  const moves = [];
+  for (let y = 0; y < state.board.length; y += 1) {
+    for (let x = 0; x < state.board[y].length; x += 1) {
+      if (state.board[y][x]?.color !== color) continue;
+      const from = { x, y };
+      for (const to of getLegalMoves(state, from)) moves.push({ from, to });
+    }
+  }
+  return moves;
+}
+
+/**
  * ¿Tiene `color` al menos un movimiento legal con alguna pieza?
  * @param {GameState} state
  * @param {Color} color
