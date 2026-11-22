@@ -16,20 +16,20 @@ export default function Board({ onSquareClick }) {
       role="group"
       aria-label="Tablero de ajedrez"
       style={{
-        gridTemplateColumns:
-          `repeat(${state.board[0].length}, var(--casilla))`,
+        gridTemplateColumns: `repeat(${state.board[0].length}, var(--casilla))`,
       }}
     >
       {state.board.map((fila, y) =>
         fila.map((piece, x) => {
-          const isHighlighted = state.highlights.some(
-            (pos) => pos.x === x && pos.y === y
-          );
+          const isHighlighted = state.highlights.some((pos) => pos.x === x && pos.y === y);
 
           const isSelected =
-            state.selected !== null &&
-            state.selected.x === x &&
-            state.selected.y === y;
+            state.selected !== null && state.selected.x === x && state.selected.y === y;
+
+          const isTarget =
+            state.objective.type === 'reachSquare' &&
+            state.objective.target.x === x &&
+            state.objective.target.y === y;
 
           return (
             <Square
@@ -39,10 +39,11 @@ export default function Board({ onSquareClick }) {
               piece={piece}
               isHighlighted={isHighlighted}
               isSelected={isSelected}
+              isTarget={isTarget}
               onClick={() => onSquareClick({ x, y })}
             />
           );
-        })
+        }),
       )}
     </div>
   );
