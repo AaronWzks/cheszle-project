@@ -9,6 +9,7 @@ import styles from './Square.module.css';
  * @param {import('../engine/mockState.js').Piece | null} props.piece
  * @param {boolean} [props.isHighlighted=false] Es un destino resaltado.
  * @param {boolean} [props.isSelected=false] Es la casilla seleccionada.
+ * @param {boolean} [props.isTarget=false] Es la casilla objetivo del nivel.
  * @param {() => void} props.onClick Función que se ejecuta al pulsar.
  */
 export default function Square(props) {
@@ -26,6 +27,12 @@ export default function Square(props) {
     isSelected = false;
   }
 
+  let isTarget = props.isTarget;
+
+  if (isTarget === undefined) {
+    isTarget = false;
+  }
+
   const onClick = props.onClick;
 
   let colorClass = styles.dark;
@@ -35,6 +42,9 @@ export default function Square(props) {
   }
 
   const classes = [styles.square, colorClass];
+  if (isTarget) {
+    classes.push(styles.target);
+  }
 
   if (isHighlighted) {
     // Casilla vacía: punto en el centro. Con pieza (enemiga): anillo de captura.
@@ -46,19 +56,18 @@ export default function Square(props) {
   }
 
   return (
-    <button
-      type="button"
-      className={classes.join(' ')}
-      aria-pressed={isSelected}
-      onClick={onClick}
-    >
+    <button type="button" className={classes.join(' ')} aria-pressed={isSelected} onClick={onClick}>
       <span className={styles.coordinates}>
-        Casilla ({x}, {y})
+        Casilla ({x}, {y}){isTarget && ' — Casilla objetivo'}
       </span>
 
-      {piece !== null && (
-        <Piece type={piece.type} color={piece.color} />
+      {isTarget && (
+        <span className={styles.targetMarker} aria-hidden="true">
+          ★
+        </span>
       )}
+
+      {piece !== null && <Piece type={piece.type} color={piece.color} />}
     </button>
   );
 }

@@ -1,0 +1,31 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--e2);
+}
+
+.information {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--e2);
+  width: min(500px, 100%);
+}
+
+.icon {
+  flex-shrink: 0;
+}
+
+.details {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--e1) var(--e2);
+}
+
+.movements {
+  font-size: var(--t-pequeno);
+  font-weight: 400;
+}
