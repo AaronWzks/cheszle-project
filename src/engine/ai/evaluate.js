@@ -58,7 +58,7 @@ function objectivePenalty(state) {
  * @param {GameState} state
  * @returns {'won' | 'lost' | 'playing'} Resultado para el jugador (blancas).
  */
-function outcome(state) {
+export function outcome(state) {
   if (isObjectiveMet(state)) return 'won';
   if (state.turn === 'white' && !hasAnyLegalMove(state, 'white')) return 'lost';
   if (state.moveCount > state.maxMoves) return 'lost';
