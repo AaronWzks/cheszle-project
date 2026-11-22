@@ -9,7 +9,7 @@ export const DEFAULT_LEVEL_ID = 'easy-1';
  * @param {import('../engine/mockState').GameState} [game] Partida ya creada (útil en tests).
  */
 export function createInitialState(game = createGame(DEFAULT_LEVEL_ID)) {
-  return { selected: null, highlights: [], ...game };
+  return { selected: null, highlights: [], lastMove: null, ...game }; //lastMove es la ultima jugada. Al empezar partida, se inicializa
 }
 
 /**
@@ -29,14 +29,17 @@ export function gameReducer(state, action) {
       };
     case 'DESELECT':
       return { ...state, selected: null, highlights: [] };
-    case 'MOVE': {
+    
+    
+      case 'MOVE': {
       const nextState = applyMove(state, action.move);
 
       return {
-        ...nextState,
+        ...nextState, //copia todo lo que hay en nextState
         status: checkStatus(nextState),
         selected: null,
         highlights: [],
+        lastMove: action.move, //para animar la pieza y resaltar origen y destino - action.move es la jugada que se acaba de hacer
       };
     }
     default:

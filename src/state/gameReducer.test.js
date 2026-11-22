@@ -71,6 +71,16 @@ describe('gameReducer', () => {
     expect(state.highlights).toEqual([]);
   });
 
+  //Comprueba dos cosas: que después de mover, lastMove es la jugada hecha,
+  // y que al empezar una partida nueva vuelve a null.
+  it('MOVE guarda la última jugada y START la borra', () => {
+    const move = { from: KING, to: { x: 4, y: 1 } };
+    const moved = gameReducer(createInitialState(), { type: 'MOVE', move });
+    expect(moved.lastMove).toEqual(move);
+    expect(gameReducer(moved, { type: 'START', levelId: DEFAULT_LEVEL_ID }).lastMove).toBe(null);
+  });
+
+
   it('no modifica el estado que recibe', () => {
     const previous = createInitialState();
     const snapshot = structuredClone(previous);

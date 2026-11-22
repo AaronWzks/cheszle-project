@@ -1,0 +1,33 @@
+/* Paso 1: cualquier pieza que aparece en una casilla entra con escala + opacidad. */
+.piece {
+  animation: appear 200ms ease-out;
+}
+
+/* Paso 2: la pieza que se acaba de mover sale de su casilla de origen.
+   --dx y --dy = cuántas casillas hay hasta el origen. Como la imagen ocupa
+   toda la casilla, 100% = una casilla. */
+.moving {
+  position: relative;
+  z-index: 1; /* que pase por encima de las demás casillas */
+  animation: slide 200ms ease-out;
+}
+
+/*define esa animación: empieza (from) al 60 % de tamaño y transparente (opacity: 0)*/
+/*y termina (to) a tamaño normal y opaca.*/
+@keyframes appear {
+  from { transform: scale(0.6); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+/*desplaza la imagen sin moverla de verdad: */
+@keyframes slide {
+  from { transform: translate(calc(var(--dx) * 100%), calc(var(--dy) * 100%)); }
+  to   { transform: translate(0, 0); }
+}
+
+/* Paso 4: quien pide menos movimiento no ve animaciones. */
+@media (prefers-reduced-motion: reduce) {
+  .piece,
+  .moving {
+    animation: none;
+  }
+}

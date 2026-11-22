@@ -10,6 +10,11 @@ import styles from './Board.module.css';
 export default function Board({ onSquareClick }) {
   const { state } = useGame();
 
+  //Saca la ultima jugada del estado
+  //?? null significa "si no existe, usa null". 
+  // Es una protección por si algún test crea un estado sin ese campo.
+  const lastMove = state.lastMove ?? null; 
+
   return (
     <div
       className={styles.board}
@@ -31,6 +36,14 @@ export default function Board({ onSquareClick }) {
             state.objective.target.x === x &&
             state.objective.target.y === y;
 
+          // ¿esta casilla es el origen de la última jugada?
+          //isLastFrom es true solo en la casilla de donde salió la pieza,
+          const isLastFrom = lastMove !== null && lastMove.from.x === x && lastMove.from.y === y;
+
+          // ¿esta casilla es el destino de la última jugada?
+          //isLastTo solo en la casilla a la que llegó.
+          const isLastTo = lastMove !== null && lastMove.to.x === x && lastMove.to.y === y;
+
           return (
             <Square
               key={`${x}-${y}`}
@@ -40,6 +53,8 @@ export default function Board({ onSquareClick }) {
               isHighlighted={isHighlighted}
               isSelected={isSelected}
               isTarget={isTarget}
+              isLastMove={isLastFrom || isLastTo}   //es true si la casilla es el origen o (||) el destino. La usaremos para pintarlas de amarillo suave.                
+              moveFrom={isLastTo ? lastMove.from : null}  //solo tiene valor en la casilla de destino: le dice de qué casilla viene la pieza. En las demás casillas vale null.      
               onClick={() => onSquareClick({ x, y })}
             />
           );

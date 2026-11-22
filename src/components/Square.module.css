@@ -49,6 +49,15 @@
   pointer-events: none;
 }
 
+/* origen y destino de la última jugada: capa amarilla suave encima del color. */
+.lastMove {
+  background-image: linear-gradient(
+    rgb(242 182 60 / 0.45),
+    rgb(242 182 60 / 0.45)
+  );
+}
+
+
 .selected {
   box-shadow: inset 0 0 0 4px var(--texto-oscuro);
 }
