@@ -54,7 +54,7 @@
 
 - [x] 2.B1 · Función de evaluación (evaluate.js)
 - [x] 2.B2 · Algoritmo Minimax con poda alfa-beta (minimax.js)
-- [ ] 2.B3 · Tests de la IA
+- [x] 2.B3 · Tests de la IA
 
 ### MªJosé
 
