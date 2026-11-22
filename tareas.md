@@ -38,8 +38,8 @@
 
 ### MªJosé
 
-- [ ] 1.C2 · Diseño visual de las piezas
-- [ ] 1.C3 · Animación del movimiento
+- [x] 1.C2 · Diseño visual de las piezas
+- [x] 1.C3 · Animación del movimiento
 
 ## Fase 2 — IA y objetivos
 
