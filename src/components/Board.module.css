@@ -1,0 +1,7 @@
+.board {
+  display: grid;
+  grid-auto-rows: var(--casilla);
+  width: fit-content;
+  border: 4px solid var(--borde-tablero);
+  border-radius: 6px;
+}

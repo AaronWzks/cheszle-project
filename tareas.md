@@ -25,16 +25,16 @@
 
 ### Aarón
 
-- [ ] 1.A1 · Lógica del tablero (board.js)
-- [ ] 1.A2 · Componentes Board y Square
-- [ ] 1.A3 · Tests del componente Board
+- [x] 1.A1 · Lógica del tablero (board.js)
+- [x] 1.A2 · Componentes Board y Square
+- [x] 1.A3 · Tests del componente Board
 
 ### Adri
 
-- [ ] 1.B1 · Movimientos de las piezas clásicas
-- [ ] 1.B2 · Reglas: movimientos legales, jaque y jaque mate (rules.js)
-- [ ] 1.B3 · Interfaz: seleccionar y resaltar movimientos
-- [ ] 1.B4 · Documentación: reglas del juego
+- [x] 1.B1 · Movimientos de las piezas clásicas
+- [x] 1.B2 · Reglas: movimientos legales, jaque y jaque mate (rules.js)
+- [x] 1.B3 · Interfaz: seleccionar y resaltar movimientos
+- [x] 1.B4 · Documentación: reglas del juego
 
 ### MªJosé
 
