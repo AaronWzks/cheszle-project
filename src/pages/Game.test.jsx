@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, screen, fireEvent, within, waitFor } from '@testing-library/react';
 import Game from './Game';
 import { GameProvider } from '../state/GameContext';
 import { createMockState } from '../engine/mockState';
@@ -107,5 +107,17 @@ describe('Game: seleccionar y mover', () => {
     expect(square(0, 2).className).toMatch(/highlighted/);
     click(0, 3);
     expect(pieceIn(0, 3)).toMatch(/^Torre blanc/);
+  });
+});
+
+describe('Game: IA de prueba (2.C1)', () => {
+  it('las negras mueven solas después de la jugada del jugador', async () => {
+    renderGame();
+    click(4, 0);
+    click(4, 1); // jugada de las blancas
+    // La torre negra empieza en (0,5); cuando la IA juega, deja esa casilla.
+    await waitFor(() => expect(pieceIn(0, 5)).toBeNull());
+    click(4, 1);
+    expect(isSelected(4, 1)).toBe(true); // vuelve a tocar a las blancas
   });
 });

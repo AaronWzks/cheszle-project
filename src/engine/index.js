@@ -20,6 +20,7 @@ import {
   hasAnyLegalMove,
 } from './rules';
 import { isObjectiveMet } from './objectives';
+import { randomMove } from './ai/randomAI';
 
 export { isInCheck } from './rules';
 
@@ -117,14 +118,8 @@ export function checkStatus(state) {
  */
 // eslint-disable-next-line no-unused-vars
 export async function getAIMove(state, difficulty) {
-  // TODO (Fase 2, tareas 2.B2 y 2.C2): minimax dentro de un Web Worker.
-  for (let y = 0; y < state.board.length; y++) {
-    for (let x = 0; x < state.board[y].length; x++) {
-      const piece = state.board[y][x];
-      if (piece?.color !== 'black') continue;
-      const [to] = getLegalMoves(state, { x, y });
-      if (to) return { from: { x, y }, to };
-    }
-  }
-  return null;
+  // 2.C1: mientras minimax no esté listo, las negras juegan al azar.
+  // Cuando Adri termine (2.B2), cambia SOLO esta línea por la de findBestMove.
+  return randomMove(state);
+
 }
