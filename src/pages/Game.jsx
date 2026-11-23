@@ -10,20 +10,32 @@ const samePos = (a, b) => a !== null && a.x === b.x && a.y === b.y;
 export default function Game() {
   const { state, dispatch } = useGame();
   
-   // 2.C1: cuando le toca a las negras y la partida sigue, la IA juega sola.
+   // 2.C1 + 2.C2: cuando le toca a las negras y la partida sigue, la IA juega
+  // sola. La IA piensa en un Web Worker, así que la pantalla no se congela.
   useEffect(() => {
-    if (state.turn !== 'black' || state.status !== 'playing') return; //React ejecuta este codigo cada vez que cambia el estado de la partida
+    if (state.turn !== 'black' || state.status !== 'playing') return;
 
-    let cancelled = false; // se pone a true si el componente cambia o se desmonta
+    // AbortController = «botón de cancelar» del navegador. Su signal se pasa a getAIMove,
+    // y al llamar a controller.abort() se termina el Worker.
+    const controller = new AbortController();
+
     const timer = setTimeout(async () => {
-      const move = await getAIMove(state, 'easy'); // esperamos la Promise. Dificultad Easy
-      if (!cancelled && move) dispatch({ type: 'MOVE', move }); // si hay jugada, la enviamos al reducer. El reducer ya cambia el turno y comprueba el estado con checkStatus
+      try {
+        const move = await getAIMove(state, 'easy', controller.signal);
+        // Si nos cancelaron mientras pensaba, no movemos nada.
+        if (!controller.signal.aborted && move) dispatch({ type: 'MOVE', move });
+      } catch (err) {
+        // El Worker falló: lo mostramos en la consola en vez de romper la app.
+        if (!controller.signal.aborted) console.error('Error en la IA:', err);
+      }
     }, 400); // pausa corta para que se vea antes la jugada del jugador
 
-    // Limpieza: si el estado cambia antes de que la IA responda, se cancela.
+    // Limpieza (cleanup): React la ejecuta si el estado cambia o si el jugador
+    // sale de la partida (el componente se desmonta). Cancelamos el temporizador
+    // y terminamos el Worker para que no responda a una partida que ya no existe.
     return () => {
-      cancelled = true;
       clearTimeout(timer);
+      controller.abort();
     };
   }, [state, dispatch]);
 

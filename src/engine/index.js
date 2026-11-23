@@ -20,7 +20,8 @@ import {
   hasAnyLegalMove,
 } from './rules';
 import { isObjectiveMet } from './objectives';
-import { randomMove } from './ai/randomAI';
+import { findBestMove } from './ai/minimax';
+import { DEPTH } from './ai/config';
 
 export { isInCheck } from './rules';
 
@@ -110,16 +111,54 @@ export function checkStatus(state) {
 }
 
 /**
- * Pide a la IA (negras) su jugada. Es asíncrona porque la IA real se ejecutará
- * en un Web Worker.
- * @param {GameState} state
- * @param {Difficulty} difficulty
- * @returns {Promise<Move | null>} null si la IA no tiene ninguna jugada.
+ * Pide a la IA (negras) su jugada. La IA piensa en un Web Worker (otro hilo)
+ * para que la pantalla no se congele mientras calcula.
+ *
+ * @param {GameState} state Estado actual (solo datos simples: se copia al Worker).
+ * @param {Difficulty} difficulty 'easy' | 'medium' | 'hard' → profundidad de DEPTH.
+ * @param {AbortSignal} [signal] Opcional. Si se cancela (p. ej. el jugador sale
+ *   de la partida), se termina el Worker y la Promise devuelve null.
+ * @returns {Promise<Move | null>} null si la IA no tiene jugada o se canceló.
  */
-// eslint-disable-next-line no-unused-vars
-export async function getAIMove(state, difficulty) {
-  // 2.C1: mientras minimax no esté listo, las negras juegan al azar.
-  // Cuando Adri termine (2.B2), cambia SOLO esta línea por la de findBestMove.
-  return randomMove(state);
+export function getAIMove(state, difficulty, signal) {
+  const depth = DEPTH[difficulty] ?? DEPTH.easy; // dificultad desconocida → fácil
 
+  // En los tests (jsdom) no existe Worker: calculamos aquí mismo.
+  if (typeof Worker === 'undefined') {
+    return Promise.resolve(findBestMove(state, depth));
+  }
+  // Si ya nos cancelaron antes de empezar, ni siquiera creamos el Worker.
+  if (signal?.aborted) return Promise.resolve(null);
+
+  return new Promise((resolve, reject) => {
+    // new URL(..., import.meta.url) es la forma que entiende Vite para
+    // empaquetar el worker. type: 'module' permite usar import dentro de él.
+    const worker = new Worker(new URL('./ai/ai.worker.js', import.meta.url), {
+      type: 'module',
+    });
+
+    // Cancelación: matamos el hilo al momento, aunque esté a mitad de cálculo.
+    const onAbort = () => {
+      worker.terminate();
+      resolve(null);
+    };
+    signal?.addEventListener('abort', onAbort, { once: true });
+
+    // Respuesta del Worker: la devolvemos y cerramos el hilo (ya no sirve).
+    worker.onmessage = (e) => {
+      signal?.removeEventListener('abort', onAbort);
+      worker.terminate();
+      resolve(e.data);
+    };
+
+    // Si el Worker falla (error de código, import roto...), no dejamos la
+    // Promise colgada para siempre: la rechazamos para que la UI lo sepa.
+    worker.onerror = (err) => {
+      signal?.removeEventListener('abort', onAbort);
+      worker.terminate();
+      reject(err);
+    };
+
+    worker.postMessage({ state, depth }); // ¡a pensar!
+  });
 }
