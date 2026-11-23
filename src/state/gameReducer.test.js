@@ -184,3 +184,35 @@ describe('MOVE actualiza el resultado de la partida', function () {
     expect(previous.status).toBe('playing');
   });
 });
+
+describe('aiThinking (2.C3)', () => {
+  it('al empezar con turno de las blancas vale false', () => {
+    expect(createInitialState(createMockState()).aiThinking).toBe(false);
+  });
+
+  it('si la partida empieza con turno de las negras vale true', () => {
+    expect(createInitialState({ ...createMockState(), turn: 'black' }).aiThinking).toBe(true);
+  });
+
+  it('tras la jugada de las blancas pasa a true y tras la de las negras a false', () => {
+    const afterWhite = gameReducer(createInitialState(createMockState()), {
+      type: 'MOVE',
+      move: { from: { x: 4, y: 0 }, to: { x: 4, y: 1 } },
+    });
+    expect(afterWhite.aiThinking).toBe(true);
+
+    const afterBlack = gameReducer(afterWhite, {
+      type: 'MOVE',
+      move: { from: { x: 0, y: 5 }, to: { x: 0, y: 6 } },
+    });
+    expect(afterBlack.aiThinking).toBe(false);
+  });
+
+  it('SET_AI_THINKING cambia el valor a mano', () => {
+    const state = gameReducer(createInitialState(createMockState()), {
+      type: 'SET_AI_THINKING',
+      value: true,
+    });
+    expect(state.aiThinking).toBe(true);
+  });
+});

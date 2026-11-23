@@ -71,16 +71,15 @@ describe('Game: seleccionar y mover', () => {
     expect(targets()).toHaveLength(0);
   });
 
-  it('se mueven piezas de los dos colores por turnos', () => {
+  // 2.C3: antes este test movía también las negras a mano. Ahora las negras
+  // solo las mueve la IA, así que se comprueba que el jugador NO puede tocarlas.
+  it('mientras la IA piensa no se pueden mover las negras a mano', () => {
     renderGame();
     click(4, 0);
-    click(4, 1); // blancas
+    click(4, 1); // blancas → ahora piensa la IA
     click(0, 5);
-    expect(isSelected(0, 5)).toBe(true);
-    click(0, 0); // negras
-    expect(pieceIn(0, 0)).toMatch(/^Torre negr/);
-    click(4, 1);
-    expect(isSelected(4, 1)).toBe(true); // vuelve a tocar a las blancas
+    expect(isSelected(0, 5)).toBe(false);
+    expect(targets()).toHaveLength(0);
   });
 
   it('pulsar la pieza seleccionada o una casilla no resaltada quita la selección', () => {
@@ -119,5 +118,37 @@ describe('Game: IA de prueba (2.C1)', () => {
     await waitFor(() => expect(pieceIn(0, 5)).toBeNull());
     click(4, 1);
     expect(isSelected(4, 1)).toBe(true); // vuelve a tocar a las blancas
+  });
+});
+
+describe('Game: indicador «IA pensando...» (2.C3)', () => {
+  const indicator = () => screen.getByRole('status');
+
+  it('al empezar no se ve el indicador', () => {
+    renderGame();
+    expect(indicator().textContent).toBe('');
+  });
+
+  it('aparece tras la jugada del jugador y desaparece cuando la IA mueve', async () => {
+    renderGame();
+    click(4, 0);
+    click(4, 1); // jugada de las blancas
+    expect(indicator().textContent).toBe('La IA está pensando...');
+
+    await waitFor(() => expect(pieceIn(0, 5)).toBeNull()); // la IA ya movió
+    expect(indicator().textContent).toBe('');
+  });
+
+  it('mientras la IA piensa el tablero está bloqueado', async () => {
+    renderGame();
+    click(4, 0);
+    click(4, 1);
+    const board = screen.getByRole('group', { name: 'Tablero de ajedrez' });
+    expect(board.getAttribute('aria-busy')).toBe('true');
+
+    click(4, 1); // intento de seleccionar el rey mientras piensa
+    expect(isSelected(4, 1)).toBe(false);
+
+    await waitFor(() => expect(board.getAttribute('aria-busy')).toBe('false'));
   });
 });
