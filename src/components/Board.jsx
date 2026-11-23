@@ -6,8 +6,9 @@ import styles from './Board.module.css';
  * Dibuja el tablero del estado compartido, con y = 0 arriba.
  * @param {object} props
  * @param {(pos: import('../engine/mockState.js').Position) => void} props.onSquareClick
+ * @param {boolean} [props.disabled=false] 2.C3: true mientras la IA piensa → no se puede pulsar.
  */
-export default function Board({ onSquareClick }) {
+export default function Board({ onSquareClick, disabled = false }) {
   const { state } = useGame();
 
   //Saca la ultima jugada del estado
@@ -16,10 +17,12 @@ export default function Board({ onSquareClick }) {
   const lastMove = state.lastMove ?? null; 
 
   return (
-    <div
-      className={styles.board}
+      <div
+      // 2.C3: con disabled añadimos la clase que bloquea los clics (ver Board.module.css)
+      className={disabled ? `${styles.board} ${styles.disabled}` : styles.board}
       role="group"
       aria-label="Tablero de ajedrez"
+      aria-busy={disabled} // avisa a los lectores de pantalla de que está «ocupado»
       style={{
         gridTemplateColumns: `repeat(${state.board[0].length}, var(--casilla))`,
       }}

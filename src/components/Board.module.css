@@ -5,3 +5,10 @@
   border: 4px solid var(--borde-tablero);
   border-radius: 6px;
 }
+
+/* 2.C3: mientras la IA piensa, el tablero no responde al ratón ni al dedo
+   y se ve un poco apagado para que se note que no es tu turno. */
+.disabled {
+  pointer-events: none;
+  opacity: 0.85;
+}

@@ -20,8 +20,9 @@ import {
   hasAnyLegalMove,
 } from './rules';
 import { isObjectiveMet } from './objectives';
-import { findBestMove } from './ai/minimax';
-import { DEPTH } from './ai/config';
+
+import { chooseMove } from './ai/chooseMove';
+import { DEPTH, RANDOM_MOVE_CHANCE } from './ai/config';
 
 export { isInCheck } from './rules';
 
@@ -115,17 +116,20 @@ export function checkStatus(state) {
  * para que la pantalla no se congele mientras calcula.
  *
  * @param {GameState} state Estado actual (solo datos simples: se copia al Worker).
- * @param {Difficulty} difficulty 'easy' | 'medium' | 'hard' → profundidad de DEPTH.
+ * @param {Difficulty} difficulty 'easy' | 'medium' | 'hard' → profundidad de DEPTH
+ *   y probabilidad de jugar al azar de RANDOM_MOVE_CHANCE (ver ai/config.js).
  * @param {AbortSignal} [signal] Opcional. Si se cancela (p. ej. el jugador sale
  *   de la partida), se termina el Worker y la Promise devuelve null.
  * @returns {Promise<Move | null>} null si la IA no tiene jugada o se canceló.
  */
 export function getAIMove(state, difficulty, signal) {
   const depth = DEPTH[difficulty] ?? DEPTH.easy; // dificultad desconocida → fácil
+  // 2.C3: probabilidad de jugar al azar (0.3 en fácil, 0 en el resto).
+  const randomChance = RANDOM_MOVE_CHANCE[difficulty] ?? RANDOM_MOVE_CHANCE.easy;
 
   // En los tests (jsdom) no existe Worker: calculamos aquí mismo.
   if (typeof Worker === 'undefined') {
-    return Promise.resolve(findBestMove(state, depth));
+    return Promise.resolve(chooseMove(state, depth, randomChance));
   }
   // Si ya nos cancelaron antes de empezar, ni siquiera creamos el Worker.
   if (signal?.aborted) return Promise.resolve(null);
@@ -159,6 +163,6 @@ export function getAIMove(state, difficulty, signal) {
       reject(err);
     };
 
-    worker.postMessage({ state, depth }); // ¡a pensar!
+    worker.postMessage({ state, depth, randomChance }); // ¡a pensar!
   });
 }
