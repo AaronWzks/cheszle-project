@@ -58,9 +58,9 @@
 
 ### MªJosé
 
-- [ ] 2.C1 · IA de prueba (mock aleatorio)
-- [ ] 2.C2 · Web Worker para la IA
-- [ ] 2.C3 · Dificultades e indicador «IA pensando…»
+- [x] 2.C1 · IA de prueba (mock aleatorio)
+- [x] 2.C2 · Web Worker para la IA
+- [x] 2.C3 · Dificultades e indicador «IA pensando…»
 - [ ] 2.C4 · Pantalla de selección de nivel y dificultad
 - [ ] 2.C5 · Medir el rendimiento de la IA
 
