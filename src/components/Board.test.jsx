@@ -46,3 +46,38 @@ describe('Board', function () {
     expect(onSquareClick).toHaveBeenCalledWith({ x, y });
   });
 });
+
+//Simula que el rey se ha movido de (4, 0) a (4, 1) y comprueba tres cosas:
+//  Las dos casillas tienen la clase de resaltado y una casilla cualquiera, no.
+//  La pieza del destino tiene la clase moving.
+//  El desplazamiento es dx = 0 y dy = −1: el rey viene de una casilla más arriba.
+describe('Board · última jugada', function () {
+  it('resalta origen y destino y anima la pieza desde el origen', function () {
+    const initialState = {
+      ...createMockState(),
+      board: createMockState().board.map((fila) => [...fila]),
+      lastMove: { from: { x: 4, y: 0 }, to: { x: 4, y: 1 } },
+    };
+    // Colocamos el rey en el destino, como si ya se hubiera movido.
+    initialState.board[1][4] = initialState.board[0][4];
+    initialState.board[0][4] = null;
+
+    render(
+      <GameProvider initial={initialState}>
+        <Board onSquareClick={() => {}} />
+      </GameProvider>,
+    );
+
+    const casillas = screen.getAllByRole('button');
+    const origen = casillas[0 * 8 + 4];
+    const destino = casillas[1 * 8 + 4];
+    expect(origen.className).toMatch(/lastMove/);
+    expect(destino.className).toMatch(/lastMove/);
+    expect(casillas[0].className).not.toMatch(/lastMove/);
+
+    const img = destino.querySelector('img');
+    expect(img.className).toMatch(/moving/);
+    expect(img.style.getPropertyValue('--dx')).toBe('0');
+    expect(img.style.getPropertyValue('--dy')).toBe('-1');
+  });
+});

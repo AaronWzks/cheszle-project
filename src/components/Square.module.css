@@ -19,6 +19,7 @@
 }
 
 .square img {
+  position: relative;
   display: block;
   width: 100%;
   height: 100%;
@@ -48,6 +49,15 @@
   pointer-events: none;
 }
 
+/* origen y destino de la última jugada: capa amarilla suave encima del color. */
+.lastMove {
+  background-image: linear-gradient(
+    rgb(242 182 60 / 0.45),
+    rgb(242 182 60 / 0.45)
+  );
+}
+
+
 .selected {
   box-shadow: inset 0 0 0 4px var(--texto-oscuro);
 }
@@ -68,4 +78,19 @@
   clip-path: inset(50%);
   white-space: nowrap;
   border: 0;
+}
+
+.target {
+  background-color: var(--verde-suave);
+}
+
+.targetMarker {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--verde-oscuro);
+  font-size: calc(var(--casilla) * 0.6);
+  line-height: 1;
+  pointer-events: none;
 }

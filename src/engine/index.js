@@ -21,6 +21,11 @@ import {
 } from './rules';
 import { isObjectiveMet } from './objectives';
 
+import { chooseMove } from './ai/chooseMove';
+import { DEPTH, RANDOM_MOVE_CHANCE } from './ai/config';
+
+export { isInCheck } from './rules';
+
 /** @typedef {import('./mockState').GameState} GameState */
 /** @typedef {import('./mockState').Position} Position */
 /** @typedef {import('./mockState').Move} Move */
@@ -107,22 +112,57 @@ export function checkStatus(state) {
 }
 
 /**
- * Pide a la IA (negras) su jugada. Es asíncrona porque la IA real se ejecutará
- * en un Web Worker.
- * @param {GameState} state
- * @param {Difficulty} difficulty
- * @returns {Promise<Move | null>} null si la IA no tiene ninguna jugada.
+ * Pide a la IA (negras) su jugada. La IA piensa en un Web Worker (otro hilo)
+ * para que la pantalla no se congele mientras calcula.
+ *
+ * @param {GameState} state Estado actual (solo datos simples: se copia al Worker).
+ * @param {Difficulty} difficulty 'easy' | 'medium' | 'hard' → profundidad de DEPTH
+ *   y probabilidad de jugar al azar de RANDOM_MOVE_CHANCE (ver ai/config.js).
+ * @param {AbortSignal} [signal] Opcional. Si se cancela (p. ej. el jugador sale
+ *   de la partida), se termina el Worker y la Promise devuelve null.
+ * @returns {Promise<Move | null>} null si la IA no tiene jugada o se canceló.
  */
-// eslint-disable-next-line no-unused-vars
-export async function getAIMove(state, difficulty) {
-  // TODO (Fase 2, tareas 2.B2 y 2.C2): minimax dentro de un Web Worker.
-  for (let y = 0; y < state.board.length; y++) {
-    for (let x = 0; x < state.board[y].length; x++) {
-      const piece = state.board[y][x];
-      if (piece?.color !== 'black') continue;
-      const [to] = getLegalMoves(state, { x, y });
-      if (to) return { from: { x, y }, to };
-    }
+export function getAIMove(state, difficulty, signal) {
+  const depth = DEPTH[difficulty] ?? DEPTH.easy; // dificultad desconocida → fácil
+  // 2.C3: probabilidad de jugar al azar (0.3 en fácil, 0 en el resto).
+  const randomChance = RANDOM_MOVE_CHANCE[difficulty] ?? RANDOM_MOVE_CHANCE.easy;
+
+  // En los tests (jsdom) no existe Worker: calculamos aquí mismo.
+  if (typeof Worker === 'undefined') {
+    return Promise.resolve(chooseMove(state, depth, randomChance));
   }
-  return null;
+  // Si ya nos cancelaron antes de empezar, ni siquiera creamos el Worker.
+  if (signal?.aborted) return Promise.resolve(null);
+
+  return new Promise((resolve, reject) => {
+    // new URL(..., import.meta.url) es la forma que entiende Vite para
+    // empaquetar el worker. type: 'module' permite usar import dentro de él.
+    const worker = new Worker(new URL('./ai/ai.worker.js', import.meta.url), {
+      type: 'module',
+    });
+
+    // Cancelación: matamos el hilo al momento, aunque esté a mitad de cálculo.
+    const onAbort = () => {
+      worker.terminate();
+      resolve(null);
+    };
+    signal?.addEventListener('abort', onAbort, { once: true });
+
+    // Respuesta del Worker: la devolvemos y cerramos el hilo (ya no sirve).
+    worker.onmessage = (e) => {
+      signal?.removeEventListener('abort', onAbort);
+      worker.terminate();
+      resolve(e.data);
+    };
+
+    // Si el Worker falla (error de código, import roto...), no dejamos la
+    // Promise colgada para siempre: la rechazamos para que la UI lo sepa.
+    worker.onerror = (err) => {
+      signal?.removeEventListener('abort', onAbort);
+      worker.terminate();
+      reject(err);
+    };
+
+    worker.postMessage({ state, depth, randomChance }); // ¡a pensar!
+  });
 }

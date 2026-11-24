@@ -1,25 +1,44 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, screen, fireEvent, within, waitFor } from '@testing-library/react';
 import Game from './Game';
 import { GameProvider } from '../state/GameContext';
 import { createMockState } from '../engine/mockState';
 import { createBoard, setPiece } from '../engine/board';
+import { MemoryRouter } from 'react-router-dom';
 
 // Estado de ejemplo (easy-1): rey blanco en (4,0) y torre negra en (0,5).
 function renderGame(initial = createMockState()) {
   render(
-    <GameProvider initial={initial}>
-      <Game />
-    </GameProvider>,
+    <MemoryRouter>
+      <GameProvider initial={initial}>
+        <Game />
+      </GameProvider>
+    </MemoryRouter>,
   );
 }
 
-const square = (x, y) => screen.getAllByRole('button')[y * 8 + x];
+function boardSquares() {
+  const board = screen.getByRole('group', {
+    name: 'Tablero de ajedrez',
+  });
+
+  return within(board).getAllByRole('button');
+}
+
+function square(x, y) {
+  return boardSquares()[y * 8 + x];
+}
+
 const click = (x, y) => fireEvent.click(square(x, y));
 const isSelected = (x, y) => square(x, y).getAttribute('aria-pressed') === 'true';
 const isTarget = (x, y) => /highlighted|capture/.test(square(x, y).className);
-const targets = () =>
-  screen.getAllByRole('button').filter((b) => /highlighted|capture/.test(b.className));
+
+function targets() {
+  return boardSquares().filter(function (button) {
+    return /highlighted|capture/.test(button.className);
+  });
+}
+
 const pieceIn = (x, y) => within(square(x, y)).queryByRole('img')?.getAttribute('alt') ?? null;
 
 describe('Game: seleccionar y mover', () => {
@@ -52,16 +71,15 @@ describe('Game: seleccionar y mover', () => {
     expect(targets()).toHaveLength(0);
   });
 
-  it('se mueven piezas de los dos colores por turnos', () => {
+  // 2.C3: antes este test movía también las negras a mano. Ahora las negras
+  // solo las mueve la IA, así que se comprueba que el jugador NO puede tocarlas.
+  it('mientras la IA piensa no se pueden mover las negras a mano', () => {
     renderGame();
     click(4, 0);
-    click(4, 1); // blancas
+    click(4, 1); // blancas → ahora piensa la IA
     click(0, 5);
-    expect(isSelected(0, 5)).toBe(true);
-    click(0, 0); // negras
-    expect(pieceIn(0, 0)).toMatch(/^Torre negr/);
-    click(4, 1);
-    expect(isSelected(4, 1)).toBe(true); // vuelve a tocar a las blancas
+    expect(isSelected(0, 5)).toBe(false);
+    expect(targets()).toHaveLength(0);
   });
 
   it('pulsar la pieza seleccionada o una casilla no resaltada quita la selección', () => {
@@ -88,5 +106,49 @@ describe('Game: seleccionar y mover', () => {
     expect(square(0, 2).className).toMatch(/highlighted/);
     click(0, 3);
     expect(pieceIn(0, 3)).toMatch(/^Torre blanc/);
+  });
+});
+
+describe('Game: IA de prueba (2.C1)', () => {
+  it('las negras mueven solas después de la jugada del jugador', async () => {
+    renderGame();
+    click(4, 0);
+    click(4, 1); // jugada de las blancas
+    // La torre negra empieza en (0,5); cuando la IA juega, deja esa casilla.
+    await waitFor(() => expect(pieceIn(0, 5)).toBeNull());
+    click(4, 1);
+    expect(isSelected(4, 1)).toBe(true); // vuelve a tocar a las blancas
+  });
+});
+
+describe('Game: indicador «IA pensando...» (2.C3)', () => {
+  const indicator = () => screen.getByRole('status');
+
+  it('al empezar no se ve el indicador', () => {
+    renderGame();
+    expect(indicator().textContent).toBe('');
+  });
+
+  it('aparece tras la jugada del jugador y desaparece cuando la IA mueve', async () => {
+    renderGame();
+    click(4, 0);
+    click(4, 1); // jugada de las blancas
+    expect(indicator().textContent).toBe('La IA está pensando...');
+
+    await waitFor(() => expect(pieceIn(0, 5)).toBeNull()); // la IA ya movió
+    expect(indicator().textContent).toBe('');
+  });
+
+  it('mientras la IA piensa el tablero está bloqueado', async () => {
+    renderGame();
+    click(4, 0);
+    click(4, 1);
+    const board = screen.getByRole('group', { name: 'Tablero de ajedrez' });
+    expect(board.getAttribute('aria-busy')).toBe('true');
+
+    click(4, 1); // intento de seleccionar el rey mientras piensa
+    expect(isSelected(4, 1)).toBe(false);
+
+    await waitFor(() => expect(board.getAttribute('aria-busy')).toBe('false'));
   });
 });
