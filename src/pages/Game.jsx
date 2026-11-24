@@ -1,12 +1,130 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Board from '../components/Board';
 import { getPiece } from '../engine/board';
 import { useGame } from '../state/GameContext';
 import HUD from '../components/HUD';
 import AIThinking from '../components/AIThinking';
-import { getAIMove } from '../engine';
+import { getAIMove, isCheckmate, hasAnyLegalMove } from '../engine';
+import { useNavigate } from 'react-router-dom';
+import Modal from '../components/Modal';
+import levels from '../engine/levels.json';
 
 const samePos = (a, b) => a !== null && a.x === b.x && a.y === b.y;
+
+/**
+ * Devuelve el id del siguiente nivel según el orden del catálogo.
+ * @param {string} levelId
+ * @returns {string | null} null si no existe un nivel posterior.
+ */
+function getNextLevelId(levelId) {
+  for (let index = 0; index < levels.length - 1; index += 1) {
+    if (levels[index].id === levelId) {
+      return levels[index + 1].id;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Describe la derrota respetando las comprobaciones de checkStatus.
+ * @param {import('../engine/mockState.js').GameState} state
+ * @returns {string}
+ */
+function getDefeatReason(state) {
+  if (state.turn === 'white') {
+    if (isCheckmate(state, 'white')) {
+      return 'Tu rey está en jaque mate.';
+    }
+
+    if (!hasAnyLegalMove(state, 'white')) {
+      return 'No tienes movimientos legales.';
+    }
+  }
+
+  if (state.moveCount > state.maxMoves) {
+    return 'Has superado el límite de jugadas.';
+  }
+
+  return 'La partida ha terminado.';
+}
+
+/**
+ * Muestra el resultado de una partida terminada.
+ * Se desmonta al iniciar otra partida.
+ */
+function GameResult() {
+  const game = useGame();
+  const state = game.state;
+  const dispatch = game.dispatch;
+  const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(true);
+
+  if (!isOpen) {
+    return null;
+  }
+
+  const nextLevelId = getNextLevelId(state.levelId);
+  let title;
+  let text;
+
+  if (state.status === 'won') {
+    title = '¡Nivel superado!';
+    text = 'Has cumplido el objetivo del nivel.';
+  } else {
+    title = 'Has perdido';
+    text = getDefeatReason(state);
+  }
+
+  function handleClose() {
+    setIsOpen(false);
+  }
+
+  function handleNextLevel() {
+    if (nextLevelId !== null) {
+      dispatch({ type: 'START', levelId: nextLevelId });
+    }
+  }
+
+  function handleRetry() {
+    dispatch({ type: 'START', levelId: state.levelId });
+  }
+
+  function handleMenu() {
+    navigate('/');
+  }
+
+  return (
+    <Modal title={title} text={text} onClose={handleClose}>
+      <div className="resultado__acciones">
+        {state.status === 'won' && (
+          <button
+            type="button"
+            className="btn btn--principal"
+            disabled={nextLevelId === null}
+            onClick={handleNextLevel}
+          >
+            Siguiente nivel
+          </button>
+        )}
+
+        {state.status === 'lost' && (
+          <button type="button" className="btn btn--principal" onClick={handleRetry}>
+            Reintentar
+          </button>
+        )}
+
+        <button
+          type="button"
+          className="btn btn--secundario btn--secundario-claro"
+          onClick={handleMenu}
+        >
+          Menú
+        </button>
+      </div>
+    </Modal>
+  );
+}
 
 export default function Game() {
   const { state, dispatch } = useGame();
@@ -66,8 +184,9 @@ export default function Game() {
    */
   function handleSquareClick(pos) {
     // 2.C3: mientras la IA piensa no se hace caso a los clics (ni al teclado).
-    if (state.aiThinking) return;
-
+    if (state.aiThinking || state.status !== 'playing') {
+      return;
+    }
     const isTarget = state.highlights.some((h) => samePos(h, pos));
     const piece = getPiece(state.board, pos);
 
@@ -81,10 +200,14 @@ export default function Game() {
   }
 
   return (
-    <HUD>
-      {/* 2.C3: indicador visible solo mientras la IA piensa */}
-      <AIThinking visible={state.aiThinking} />
-      <Board onSquareClick={handleSquareClick} disabled={state.aiThinking} />
-    </HUD>
+    <>
+      <HUD>
+        {/* 2.C3: indicador visible solo mientras la IA piensa */}
+        <AIThinking visible={state.aiThinking} />
+        <Board onSquareClick={handleSquareClick} disabled={state.aiThinking} />
+      </HUD>
+
+      {(state.status === 'won' || state.status === 'lost') && <GameResult />}
+    </>
   );
 }
