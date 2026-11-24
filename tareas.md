@@ -45,22 +45,22 @@
 
 ### Aarón
 
-- [ ] 2.A1 · Lógica de objetivos (objectives.js)
-- [ ] 2.A2 · HUD (información de la partida)
+- [x] 2.A1 · Lógica de objetivos (objectives.js)
+- [x] 2.A2 · HUD (información de la partida)
 - [ ] 2.A3 · Modales de victoria y derrota
 - [ ] 2.A4 · Tests y documentación de objetivos
 
 ### Adri
 
-- [ ] 2.B1 · Función de evaluación (evaluate.js)
-- [ ] 2.B2 · Algoritmo Minimax con poda alfa-beta (minimax.js)
-- [ ] 2.B3 · Tests de la IA
+- [x] 2.B1 · Función de evaluación (evaluate.js)
+- [x] 2.B2 · Algoritmo Minimax con poda alfa-beta (minimax.js)
+- [x] 2.B3 · Tests de la IA
 
 ### MªJosé
 
-- [ ] 2.C1 · IA de prueba (mock aleatorio)
-- [ ] 2.C2 · Web Worker para la IA
-- [ ] 2.C3 · Dificultades e indicador «IA pensando…»
+- [x] 2.C1 · IA de prueba (mock aleatorio)
+- [x] 2.C2 · Web Worker para la IA
+- [x] 2.C3 · Dificultades e indicador «IA pensando…»
 - [ ] 2.C4 · Pantalla de selección de nivel y dificultad
 - [ ] 2.C5 · Medir el rendimiento de la IA
 
