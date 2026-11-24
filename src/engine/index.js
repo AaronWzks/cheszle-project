@@ -24,7 +24,7 @@ import { isObjectiveMet } from './objectives';
 import { chooseMove } from './ai/chooseMove';
 import { DEPTH, RANDOM_MOVE_CHANCE } from './ai/config';
 
-export { isInCheck } from './rules';
+export { isInCheck, isCheckmate, hasAnyLegalMove } from './rules';
 
 /** @typedef {import('./mockState').GameState} GameState */
 /** @typedef {import('./mockState').Position} Position */

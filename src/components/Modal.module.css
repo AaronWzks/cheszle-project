@@ -1,0 +1,12 @@
+.dialog {
+  margin: auto;
+  border: 0;
+}
+
+.dialog:not([open]) {
+  display: none;
+}
+
+.dialog::backdrop {
+  background: rgba(6, 18, 28, 0.64);
+}

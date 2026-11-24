@@ -45,8 +45,8 @@
 
 ### Aarón
 
-- [ ] 2.A1 · Lógica de objetivos (objectives.js)
-- [ ] 2.A2 · HUD (información de la partida)
+- [x] 2.A1 · Lógica de objetivos (objectives.js)
+- [x] 2.A2 · HUD (información de la partida)
 - [ ] 2.A3 · Modales de victoria y derrota
 - [ ] 2.A4 · Tests y documentación de objetivos
 
